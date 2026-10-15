@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173029">
+  <title>粗门｜一起玩 · 周末活动池</title>
+  <style>
+    :root {
+      --ink: #173029;
+      --muted: #697770;
+      --paper: #f4f8f6;
+      --card: #fff;
+      --line: #dbe6e1;
+      --mint: #bfe8d7;
+      --mint-soft: #e7f6f0;
+      --mint-deep: #438d70;
+      --warning: #b67b32;
+      --shadow: 0 10px 34px rgba(23,48,41,.07);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: var(--ink); background: radial-gradient(circle at 90% 0, #dff3ea 0, transparent 28%), var(--paper); font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+    button, input, textarea { font: inherit; }
+    .shell { width: min(1120px, calc(100% - 34px)); margin: auto; padding: 22px 0 54px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 820; }
+    .mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ink); color: var(--mint); font-size: 13px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 9px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); text-decoration: none; font-weight: 760; cursor: pointer; }
+    .btn:hover { border-color: #9fb8ac; }
+    .btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .btn.mint { background: var(--mint-soft); border-color: var(--mint); color: #28694f; }
+    .btn.ghost { min-height: 34px; padding: 6px 10px; font-size: 12px; }
+    .hero { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: end; padding: 48px 0 28px; }
+    .eyebrow { margin: 0 0 11px; color: var(--mint-deep); font-size: 11px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(38px, 6vw, 68px); line-height: 1.02; letter-spacing: -.06em; }
+    .subtitle { margin: 14px 0 0; color: var(--muted); line-height: 1.65; }
+    .status { align-self: center; padding: 12px 14px; border: 1px solid #ead6b7; border-radius: 12px; background: #fffaf2; color: #7a5728; font-size: 12px; line-height: 1.5; }
+    .layout { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 18px; align-items: start; }
+    .card { border: 1px solid var(--line); border-radius: 18px; background: var(--card); box-shadow: var(--shadow); }
+    .form-card { padding: 22px; }
+    .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+    .card-head h2 { margin: 0 0 5px; font-size: 21px; letter-spacing: -.035em; }
+    .card-head p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .field { display: grid; gap: 7px; margin-bottom: 13px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { font-size: 12px; font-weight: 800; }
+    input, textarea { width: 100%; border: 1px solid var(--line); border-radius: 11px; background: #fff; color: var(--ink); padding: 11px 12px; outline: none; }
+    input:focus, textarea:focus { border-color: var(--mint-deep); box-shadow: 0 0 0 3px rgba(67,141,112,.12); }
+    textarea { min-height: 128px; resize: vertical; line-height: 1.6; }
+    .hint { color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+    .pool { padding: 22px; min-height: 480px; }
+    .count { display: grid; place-items: center; min-width: 28px; height: 28px; padding: 0 8px; border-radius: 999px; background: var(--mint-deep); color: #fff; font-size: 11px; font-weight: 850; }
+    .candidate-list { display: grid; gap: 10px; }
+    .candidate { border: 1px solid var(--line); border-left: 4px solid var(--mint-deep); border-radius: 12px; padding: 15px; background: #fff; }
+    .candidate-top { display: flex; justify-content: space-between; gap: 14px; }
+    .candidate small { display: block; color: var(--mint-deep); font-weight: 820; margin-bottom: 6px; }
+    .candidate h3 { margin: 0 0 8px; font-size: 16px; line-height: 1.35; }
+    .meta { color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .candidate-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 13px; padding-top: 12px; border-top: 1px dashed var(--line); }
+    .empty { display: grid; place-items: center; min-height: 330px; padding: 30px; border: 1px dashed #b9d3c7; border-radius: 13px; background: #fbfdfc; color: var(--muted); text-align: center; line-height: 1.7; }
+    .toast { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 20px); padding: 11px 15px; border-radius: 999px; background: var(--ink); color: #fff; opacity: 0; pointer-events: none; transition: .2s; font-size: 13px; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    footer { margin-top: 24px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    @media (max-width: 820px) { .hero { grid-template-columns: 1fr; } .layout { grid-template-columns: 1fr; } .status { justify-self: start; } }
+    @media (max-width: 520px) { .shell { width: min(100% - 22px, 1120px); } .topbar { align-items: flex-start; } .brand span:last-child { display: none; } .field-row { grid-template-columns: 1fr; } h1 { font-size: 42px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="mark">粗门</span><span>周末活动候选中心</span></div>
+      <a class="btn" href="class-activity-calendar.html">返回班级日历 →</a>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Cumen Weekend Activity Pool</p>
+        <h1>先挑活动，<br>再放进周末。</h1>
+        <p class="subtitle">集中收集“粗门｜一起玩”的活动信息。确认合适后送入班级日历，再拖到周六或周日完成排期。</p>
+      </div>
+      <div class="status"><strong>数据连接：</strong>等待公开分享链接或官方授权接口<br>当前支持粘贴活动文案并自动识别基本信息</div>
+    </section>
+
+    <section class="layout">
+      <form class="card form-card" id="candidateForm">
+        <div class="card-head"><div><h2>录入粗门活动</h2><p>从小程序分享页复制文案；不会把示例内容当作真实活动。</p></div></div>
+        <div class="field">
+          <label for="shareText">小程序分享文案</label>
+          <textarea id="shareText" name="shareText" placeholder="粘贴活动名称、日期、时间、地点和分享链接……"></textarea>
+          <div><button class="btn ghost mint" type="button" id="parseText">识别文案</button></div>
+        </div>
+        <div class="field"><label for="title">活动名称 *</label><input id="title" name="title" required placeholder="例如：周末飞盘体验"></div>
+        <div class="field-row">
+          <div class="field"><label for="sourceDate">活动日期（限周六/周日）</label><input id="sourceDate" name="sourceDate" type="date"></div>
+          <div class="field"><label for="time">时间</label><input id="time" name="time" placeholder="例如：14:00–16:00"></div>
+        </div>
+        <div class="field"><label for="location">地点</label><input id="location" name="location" placeholder="场馆或集合地址"></div>
+        <div class="field"><label for="sourceUrl">活动分享链接</label><input id="sourceUrl" name="sourceUrl" type="url" placeholder="https://..."></div>
+        <div class="field"><label for="notes">备注</label><textarea id="notes" name="notes" placeholder="费用、人数限制、适合人群等"></textarea></div>
+        <p class="hint">如果活动页没有可复制链接，可把活动截图发给我；识别后仍建议人工核对日期、价格和报名状态。</p>
+        <div class="form-actions"><button class="btn" type="reset">清空</button><button class="btn primary" type="submit">加入候选池</button></div>
+      </form>
+
+      <section class="card pool">
+        <div class="card-head"><div><h2>候选活动</h2><p>送入日历后，在班级日历中拖到对应周末。</p></div><span class="count" id="candidateCount">0</span></div>
+        <div class="candidate-list" id="candidateList"></div>
+      </section>
+    </section>
+
+    <footer>说明：此页面不绕过微信登录，也不抓取非公开数据。后续取得粗门官方 API、俱乐部后台导出或公开活动分享链接后，可把录入步骤升级为自动同步。</footer>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const CANDIDATE_KEY = "fd-cumen-candidates-v1";
+    const $ = selector => document.querySelector(selector);
+    const escapeHTML = (value = "") => String(value).replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
+    let candidates = loadCandidates();
+
+    function loadCandidates() {
+      try {
+        const data = JSON.parse(localStorage.getItem(CANDIDATE_KEY));
+        return Array.isArray(data) ? data : [];
+      } catch (_) { return []; }
+    }
+    function saveCandidates() { localStorage.setItem(CANDIDATE_KEY, JSON.stringify(candidates)); }
+    function showToast(message) {
+      const toast = $("#toast"); toast.textContent = message; toast.classList.add("show");
+      clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+    function zhDate(value) {
+      if (!value) return "日期待选";
+      return new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "short" }).format(new Date(`${value}T12:00:00`));
+    }
+    function isWeekend(value) {
+      if (!value) return true;
+      const day = new Date(`${value}T12:00:00`).getDay();
+      return day === 0 || day === 6;
+    }
+    function encodeCandidate(candidate) {
+      const bytes = new TextEncoder().encode(JSON.stringify(candidate));
+      let binary = ""; bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    }
+    function render() {
+      $("#candidateCount").textContent = candidates.length;
+      if (!candidates.length) {
+        $("#candidateList").innerHTML = `<div class="empty">还没有候选活动。<br>从粗门小程序复制一个真实活动的分享文案，从左侧开始。</div>`;
+        return;
+      }
+      $("#candidateList").innerHTML = candidates.map(candidate => `
+        <article class="candidate">
+          <div class="candidate-top"><div><small>粗门｜一起玩 · 周末候选</small><h3>${escapeHTML(candidate.title)}</h3></div></div>
+          <div class="meta">${escapeHTML(zhDate(candidate.sourceDate))}${candidate.time ? ` · ${escapeHTML(candidate.time)}` : ""}<br>${escapeHTML(candidate.location || "地点待确认")}</div>
+          <div class="candidate-actions">
+            <button class="btn ghost" type="button" data-remove="${escapeHTML(candidate.id)}">移除</button>
+            <button class="btn ghost mint" type="button" data-send="${escapeHTML(candidate.id)}">送到班级日历 →</button>
+          </div>
+        </article>`).join("");
+      document.querySelectorAll("[data-remove]").forEach(button => button.addEventListener("click", () => {
+        candidates = candidates.filter(item => item.id !== button.dataset.remove); saveCandidates(); render(); showToast("已移除候选活动");
+      }));
+      document.querySelectorAll("[data-send]").forEach(button => button.addEventListener("click", () => {
+        const candidate = candidates.find(item => item.id === button.dataset.send);
+        if (!candidate) return;
+        window.location.href = `class-activity-calendar.html?candidate=${encodeURIComponent(encodeCandidate(candidate))}`;
+      }));
+    }
+    function parseShareText() {
+      const text = $("#shareText").value.trim();
+      if (!text) { showToast("请先粘贴活动文案"); return; }
+      const lines = text.split(/\n+/).map(line => line.trim()).filter(Boolean);
+      const url = text.match(/https?:\/\/[^\s]+/i)?.[0] || "";
+      const fullDate = text.match(/(20\d{2})[年\/.\-](\d{1,2})[月\/.\-](\d{1,2})日?/);
+      const shortDate = text.match(/(\d{1,2})月(\d{1,2})日/);
+      let sourceDate = "";
+      if (fullDate) sourceDate = `${fullDate[1]}-${String(fullDate[2]).padStart(2,"0")}-${String(fullDate[3]).padStart(2,"0")}`;
+      else if (shortDate) sourceDate = `${new Date().getFullYear()}-${String(shortDate[1]).padStart(2,"0")}-${String(shortDate[2]).padStart(2,"0")}`;
+      const timeMatches = text.match(/\d{1,2}:\d{2}/g) || [];
+      const location = text.match(/(?:地点|地址|集合地)[：:]\s*([^\n]+)/)?.[1]?.trim() || "";
+      const likelyTitle = lines.find(line => !/^https?:/i.test(line) && !/^(时间|日期|地点|地址|费用|价格|活动时间)[：:]/.test(line)) || "";
+      if (!$("#title").value) $("#title").value = likelyTitle;
+      if (!$("#sourceDate").value && sourceDate) $("#sourceDate").value = sourceDate;
+      if (!$("#time").value && timeMatches.length) $("#time").value = timeMatches.slice(0,2).join("–");
+      if (!$("#location").value) $("#location").value = location;
+      if (!$("#sourceUrl").value) $("#sourceUrl").value = url;
+      showToast("已识别，请核对后加入候选池");
+    }
+
+    $("#parseText").addEventListener("click", parseShareText);
+    $("#candidateForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const sourceDate = form.get("sourceDate") || "";
+      if (!isWeekend(sourceDate)) { showToast("活动日期需选择周六或周日"); return; }
+      candidates.push({
+        id: `cumen-candidate-${Date.now()}`,
+        title: form.get("title").trim(),
+        sourceDate,
+        time: form.get("time").trim(),
+        location: form.get("location").trim(),
+        sourceUrl: form.get("sourceUrl").trim(),
+        notes: form.get("notes").trim() || form.get("shareText").trim(),
+        importedAt: new Date().toISOString()
+      });
+      saveCandidates(); event.currentTarget.reset(); render(); showToast("已加入周末候选池");
+    });
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1540 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16231f">
+  <title>班级活动日历</title>
+  <style>
+    :root {
+      --ink: #16231f;
+      --muted: #6b746f;
+      --paper: #f6f7f4;
+      --card: #ffffff;
+      --line: #e2e6e1;
+      --mint: #bfe8d7;
+      --mint-deep: #4f9b7d;
+      --mint-soft: #e7f6f0;
+      --fixed: #3e8f70;
+      --fixed-soft: #e3f5ed;
+      --variable: #7b78b5;
+      --variable-soft: #efeffa;
+      --lime: #ddecaa;
+      --coral: #ff836d;
+      --blue: #89b9d2;
+      --violet: #aa9bd1;
+      --shadow: 0 5px 20px rgba(22, 35, 31, .045);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { color: inherit; }
+    [hidden] { display: none !important; }
+
+    .shell { width: min(1360px, calc(100% - 40px)); margin: 0 auto; padding: 22px 0 48px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 34px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 780; letter-spacing: -.01em; }
+    .brand-mark {
+      display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px;
+      background: var(--ink); color: var(--mint); font-size: 13px;
+    }
+    .top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .btn {
+      appearance: none; border: 1px solid var(--line); background: #fff; border-radius: 10px;
+      min-height: 40px; padding: 9px 14px; font-weight: 720; cursor: pointer; transition: .16s ease;
+    }
+    .btn:hover { border-color: #aeb6b1; background: #f9faf8; }
+    a.btn { display: inline-flex; align-items: center; text-decoration: none; }
+    .btn:focus-visible, .tab:focus-visible, .event:focus-visible, .board-card:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    .btn.primary { background: var(--ink); color: #fff; }
+    .btn.accent { background: var(--mint-soft); border-color: var(--mint); }
+    .btn.small { min-height: 36px; padding: 7px 12px; font-size: 13px; }
+    .btn.icon { min-width: 42px; padding: 8px; font-size: 19px; }
+
+    .hero { margin-bottom: 24px; }
+    .eyebrow { display: inline-flex; margin: 0 0 12px; padding: 6px 9px; border-radius: 7px; background: var(--mint-soft); color: #39755f; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(38px, 5vw, 62px); line-height: 1.05; letter-spacing: -.055em; font-weight: 850; }
+    .hero-subtitle { margin: 12px 0 0; color: var(--muted); font-size: 15px; }
+
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 26px; }
+    .metric { position: relative; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-height: 92px; }
+    .metric::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--mint); }
+    .metric-value { display: block; font-size: 30px; line-height: 1; font-weight: 820; letter-spacing: -.045em; margin-bottom: 10px; }
+    .metric-label { display: block; color: var(--muted); font-size: 13px; line-height: 1.4; }
+
+    .wish-pool { margin: 0 0 26px; padding: 20px; border: 1px solid #d5e7df; border-radius: var(--radius); background: linear-gradient(135deg, #ffffff 0%, #edf8f3 100%); box-shadow: var(--shadow); }
+    .wish-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
+    .wish-title { display: flex; align-items: flex-start; gap: 12px; }
+    .wish-icon { display: grid; place-items: center; flex: 0 0 auto; width: 38px; height: 38px; border-radius: 12px; background: var(--ink); color: var(--mint); font-size: 17px; }
+    .wish-head h2 { margin: 0 0 5px; font-size: 20px; letter-spacing: -.03em; }
+    .wish-head p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .wish-layout { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 14px; align-items: start; }
+    .wish-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .wish-card { position: relative; min-height: 172px; padding: 15px; border: 1px solid var(--line); border-radius: 13px; background: rgba(255,255,255,.94); }
+    .wish-card .wish-type { display: inline-flex; margin-bottom: 8px; padding: 4px 7px; border-radius: 6px; background: var(--mint-soft); color: #34745b; font-size: 9px; font-weight: 850; letter-spacing: .08em; }
+    .wish-card h3 { margin: 0 0 7px; font-size: 15px; line-height: 1.35; }
+    .wish-card p { display: -webkit-box; margin: 0 0 12px; overflow: hidden; color: #53615a; font-size: 12px; line-height: 1.55; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+    .wish-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 13px; }
+    .wish-meta span { padding: 4px 7px; border-radius: 999px; background: #f1f4f2; color: var(--muted); font-size: 9px; }
+    .wish-vote { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 36px; border: 1px solid #cfe4da; border-radius: 9px; background: var(--mint-soft); color: #2f6d56; font-size: 12px; font-weight: 820; cursor: pointer; }
+    .wish-vote:hover { border-color: var(--mint-deep); }
+    .wish-vote.voted { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .wish-vote:disabled { opacity: .55; cursor: wait; }
+    .wish-empty { grid-column: 1 / -1; display: grid; place-items: center; min-height: 100px; padding: 20px; border: 1px dashed #bad4c8; border-radius: 12px; color: var(--muted); font-size: 12px; text-align: center; }
+    .wish-count { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; margin-left: 5px; padding: 0 7px; border-radius: 999px; background: var(--mint-deep); color: #fff; font-size: 10px; vertical-align: 2px; }
+    .wish-ranking { position: sticky; top: 14px; padding: 15px; border: 1px solid #cfe4da; border-radius: 13px; background: rgba(255,255,255,.88); }
+    .ranking-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .ranking-head h3 { margin: 0; font-size: 15px; }
+    .sync-state { display: inline-flex; align-items: center; gap: 5px; color: #447a65; font-size: 9px; font-weight: 800; }
+    .sync-state::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--mint-deep); box-shadow: 0 0 0 3px var(--mint-soft); }
+    .sync-state.offline { color: var(--muted); }
+    .sync-state.offline::before { background: #a7ada9; box-shadow: 0 0 0 3px #edf0ee; }
+    .ranking-list { display: grid; gap: 12px; }
+    .rank-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+    .rank-no { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 7px; background: var(--mint-soft); color: #39755f; font-size: 9px; font-weight: 850; }
+    .rank-copy { min-width: 0; }
+    .rank-copy strong { display: block; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .rank-bar { height: 5px; margin-top: 5px; overflow: hidden; border-radius: 999px; background: #e9eeeb; }
+    .rank-bar i { display: block; height: 100%; border-radius: inherit; background: var(--mint-deep); transition: width .28s ease; }
+    .rank-votes { color: #39755f; font-size: 10px; font-weight: 850; }
+    .ranking-empty { padding: 20px 8px; color: var(--muted); font-size: 11px; line-height: 1.6; text-align: center; }
+
+    .claim-panel { margin-top: 18px; padding: 15px; border: 1px solid #cfe4da; border-radius: 14px; background: var(--mint-soft); }
+    .claim-panel h3 { margin: 0 0 5px; font-size: 15px; }
+    .claim-panel > p { margin: 0 0 12px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .claim-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .claim-chip { padding: 5px 8px; border-radius: 999px; background: #fff; border: 1px solid #cfe4da; color: #39755f; font-size: 10px; font-weight: 750; }
+    .claim-empty { color: var(--muted); font-size: 11px; }
+    .claim-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+    .claim-actions input { min-width: 0; padding: 9px 10px; border-radius: 9px; font-size: 12px; }
+
+    .viewbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 0 0 14px; }
+    .tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 11px; padding: 3px; background: #fff; }
+    .tab { border: 0; background: transparent; border-radius: 8px; padding: 9px 16px; font-weight: 760; cursor: pointer; }
+    .tab.active { background: var(--ink); color: #fff; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .filter { border: 1px solid var(--line); background: #fff; border-radius: 9px; padding: 8px 11px; color: var(--muted); cursor: pointer; font-size: 12px; font-weight: 700; }
+    .filter.active { border-color: var(--mint-deep); color: #2f6d56; background: var(--mint-soft); }
+
+    .calendar-layout { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 16px; align-items: start; }
+    .calendar-card, .side-card, .board-column { border: 1px solid var(--line); background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); }
+    .calendar-card { overflow: hidden; }
+    .cal-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px; border-bottom: 1px solid var(--line); }
+    .cal-title { display: flex; align-items: baseline; gap: 12px; }
+    .cal-title h2 { margin: 0; font-size: 26px; letter-spacing: -.035em; }
+    .cal-title span { color: var(--muted); font-size: 13px; }
+    .cal-nav { display: flex; align-items: center; gap: 7px; }
+    .weekdays, .days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    .weekday { padding: 11px 8px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; font-weight: 820; text-align: center; letter-spacing: .08em; }
+    .day { min-height: 154px; padding: 10px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; }
+    .day:nth-child(7n) { border-right: 0; }
+    .day.muted { background: rgba(22,35,31,.027); color: #9ba29e; }
+    .day.today .day-num { background: var(--ink); color: #fff; }
+    .day.has-event { background: #fcfdfb; }
+    .day.weekend-drop { position: relative; }
+    .day.weekend-drop::after { content: "周末可放入"; position: absolute; top: 11px; right: 8px; color: #8b9690; font-size: 8px; font-weight: 800; opacity: 0; transition: .16s ease; }
+    .day.weekend-drop:hover::after { opacity: .8; }
+    .day.drag-over { background: var(--mint-soft); box-shadow: inset 0 0 0 2px var(--mint-deep); }
+    .day.drag-over::after { content: "松开放入"; opacity: 1; color: #2f6d56; }
+    .day-num { display: grid; place-items: center; width: 26px; height: 26px; margin-bottom: 6px; border-radius: 50%; font-size: 13px; font-weight: 800; }
+    .event { width: 100%; border: 0; border-left: 3px solid var(--mint); border-radius: 6px; padding: 7px 8px; margin: 4px 0; background: #eef6f1; text-align: left; cursor: pointer; color: var(--ink); }
+    .event:hover { filter: brightness(.97); }
+    .event .time { display: block; margin-bottom: 2px; font-size: 10px; font-weight: 800; opacity: .68; }
+    .event .name { display: block; font-size: 11px; font-weight: 780; line-height: 1.35; }
+    .team-label { display: block; margin-top: 3px; color: var(--muted); font-size: .7em; font-weight: 650; line-height: 1.25; letter-spacing: .01em; }
+    .event .team-label { font-size: 8px; opacity: .78; }
+    .dialog-head .team-label { margin-top: 7px; font-size: 12px; }
+    .event[data-cat="运动"] { background: var(--mint-soft); border-color: var(--mint-deep); }
+    .event[data-cat="社交"] { background: #ffddd7; border-color: var(--coral); }
+    .event[data-cat="分享"] { background: #dcebf1; border-color: var(--blue); }
+    .event[data-cat="综合"] { background: #e8e3f2; border-color: var(--violet); }
+    .event[data-cat="节日"] { background: #fff3df; border-color: #d6a24f; }
+    .event[data-schedule="fixed"] { background: var(--fixed-soft); border-color: var(--fixed); }
+    .event[data-schedule="variable"] { background: var(--variable-soft); border-color: var(--variable); }
+    .event[data-schedule="reminder"] { background: #fff3df; border-color: #d6a24f; }
+
+    .weekend-planner { margin-bottom: 16px; padding: 18px; border: 1px solid #cfe7dc; border-radius: var(--radius); background: linear-gradient(135deg, #f7fcfa 0%, #eef8f4 100%); }
+    .planner-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 14px; }
+    .planner-head h2 { margin: 0 0 5px; font-size: 20px; letter-spacing: -.03em; }
+    .planner-head p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .candidate-list { display: flex; gap: 10px; overflow-x: auto; padding: 2px 2px 6px; min-height: 82px; }
+    .candidate-card { position: relative; flex: 0 0 240px; border: 1px solid #c8ddd4; border-radius: 12px; padding: 13px 38px 13px 13px; background: #fff; cursor: grab; box-shadow: 0 3px 12px rgba(22,35,31,.04); }
+    .candidate-card:active { cursor: grabbing; }
+    .candidate-card.dragging { opacity: .46; }
+    .candidate-card small { display: block; color: #4f7968; font-size: 10px; font-weight: 800; margin-bottom: 6px; }
+    .candidate-card strong { display: block; font-size: 13px; line-height: 1.35; margin-bottom: 6px; }
+    .candidate-card span { display: block; color: var(--muted); font-size: 10px; line-height: 1.45; }
+    .candidate-remove { position: absolute; top: 8px; right: 8px; border: 0; background: transparent; color: #85908a; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; }
+    .candidate-remove:hover { background: #eef3f0; color: var(--ink); }
+    .candidate-empty { width: 100%; display: flex; align-items: center; justify-content: center; min-height: 76px; border: 1px dashed #b8d5c8; border-radius: 12px; color: var(--muted); font-size: 12px; text-align: center; padding: 14px; }
+
+    .side-stack { display: grid; gap: 16px; }
+    .side-card { padding: 18px; box-shadow: none; }
+    .side-card h3 { margin: 0 0 5px; font-size: 17px; letter-spacing: -.02em; }
+    .side-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 5px; }
+    .side-card-head h3 { margin: 0; }
+    .side-card > p { color: var(--muted); margin: 0 0 16px; font-size: 12px; line-height: 1.5; }
+    .undated-list, .rhythm-list { display: grid; gap: 9px; }
+    .mini-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #fff; cursor: pointer; }
+    .mini-card:hover { border-color: var(--ink); }
+    .mini-card .tag, .board-card .tag, .detail-tag { display: inline-flex; align-items: center; gap: 5px; margin-bottom: 8px; font-size: 10px; font-weight: 850; letter-spacing: .08em; color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); }
+    .mini-card strong { display: block; font-size: 13px; line-height: 1.35; }
+    .mini-card small { color: var(--muted); }
+    .schedule-entry { border: 1px solid var(--line); border-radius: 11px; padding: 12px; background: #fff; }
+    .schedule-entry:hover { border-color: #b8c4be; }
+    .schedule-entry .tag { display: inline-flex; align-items: center; gap: 5px; margin-bottom: 7px; color: var(--muted); font-size: 9px; font-weight: 850; letter-spacing: .07em; }
+    .schedule-title { display: block; width: 100%; margin: 0 0 11px; padding: 0; border: 0; background: transparent; text-align: left; font-size: 13px; font-weight: 780; line-height: 1.4; cursor: pointer; }
+    .schedule-title:hover { color: #2f6d56; }
+    .schedule-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; }
+    .schedule-controls input { min-width: 0; padding: 8px 9px; border-radius: 9px; font-size: 11px; }
+    .schedule-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 7px; }
+    .btn.tiny { min-height: 32px; padding: 6px 9px; border-radius: 8px; font-size: 11px; }
+    .rhythm { display: grid; grid-template-columns: 50px 1fr; align-items: center; gap: 10px; }
+    .rhythm-badge { display: grid; place-items: center; width: 50px; min-height: 42px; padding: 5px; border-radius: 9px; background: #eff3ee; color: var(--ink); font-size: 9px; line-height: 1.2; text-align: center; font-weight: 820; }
+    .rhythm strong { display: block; font-size: 12px; }
+    .rhythm small { color: var(--muted); font-size: 10px; }
+
+    .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: start; }
+    .board-column { padding: 17px; box-shadow: none; }
+    .board-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .board-head h3 { margin: 0; font-size: 17px; }
+    .count { display: grid; place-items: center; min-width: 28px; height: 28px; padding: 0 8px; border-radius: 999px; background: var(--mint-deep); color: #fff; font-size: 11px; font-weight: 850; }
+    .board-list { display: grid; gap: 10px; }
+    .board-card { border: 1px solid var(--line); border-radius: 11px; padding: 15px; background: #fff; cursor: pointer; text-align: left; width: 100%; }
+    .board-card[data-schedule="fixed"] { border-left: 4px solid var(--fixed); }
+    .board-card[data-schedule="variable"] { border-left: 4px solid var(--variable); }
+    .board-card[data-schedule="reminder"] { border-left: 4px solid #d6a24f; }
+    .board-card:hover { border-color: #9fa9a3; }
+    .board-card h4 { margin: 0 0 9px; font-size: 15px; line-height: 1.35; }
+    .board-card p { margin: 0 0 12px; min-height: 38px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .board-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 11px; color: var(--muted); }
+
+    .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; color: var(--muted); font-size: 12px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .legend .dot[data-cat="运动"] { background: var(--mint-deep); }
+    .legend .dot[data-cat="社交"] { background: var(--coral); }
+    .legend .dot[data-cat="分享"] { background: var(--blue); }
+    .legend .dot[data-cat="综合"] { background: var(--violet); }
+    .legend .dot[data-cat="节日"] { background: #d6a24f; }
+    .schedule-legend { padding-left: 14px; margin-left: 2px; border-left: 1px solid var(--line); }
+    .schedule-swatch { width: 18px; height: 10px; border-radius: 3px; border-left: 4px solid; }
+    .schedule-swatch.fixed { background: var(--fixed-soft); border-color: var(--fixed); }
+    .schedule-swatch.variable { background: var(--variable-soft); border-color: var(--variable); }
+    footer { display: flex; justify-content: space-between; gap: 24px; margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.6; }
+    footer strong { color: var(--ink); }
+
+    dialog { border: 0; padding: 0; border-radius: 24px; width: min(620px, calc(100% - 28px)); color: var(--ink); background: var(--card); box-shadow: 0 24px 90px rgba(0,0,0,.25); }
+    dialog::backdrop { background: rgba(12,21,18,.68); backdrop-filter: blur(5px); }
+    .dialog-body { padding: 26px; }
+    .dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
+    .dialog-head h2 { margin: 0; font-size: 29px; line-height: 1.1; letter-spacing: -.04em; }
+    .close { border: 1px solid var(--line); background: transparent; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 20px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+    .detail-item { padding: 12px; border: 1px solid var(--line); border-radius: 13px; }
+    .detail-item small { display: block; color: var(--muted); margin-bottom: 5px; }
+    .detail-item strong { font-size: 13px; }
+    .detail-copy { color: #3f4c46; line-height: 1.7; }
+    .notes { padding-left: 19px; color: #3f4c46; line-height: 1.6; }
+    .notes li + li { margin-top: 7px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { display: grid; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: 12px; font-weight: 800; }
+    input, select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 11px 12px; color: var(--ink); }
+    textarea { min-height: 100px; resize: vertical; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 20px; }
+    .hint { color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 24px); padding: 12px 16px; border-radius: 999px; background: var(--ink); color: #fff; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: .2s ease; z-index: 10; font-size: 13px; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 980px) {
+      .calendar-layout { grid-template-columns: 1fr; }
+      .side-stack { grid-template-columns: 1fr 1fr; }
+      .board { grid-template-columns: 1fr; }
+      .wish-layout { grid-template-columns: 1fr; }
+      .wish-ranking { position: static; }
+    }
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 22px, 1440px); padding-top: 16px; }
+      .topbar { align-items: flex-start; margin-bottom: 34px; }
+      .brand span:last-child { display: none; }
+      .top-actions .btn:not(.primary) { display: none; }
+      .top-actions .btn.text-plan-link { display: inline-flex; }
+      h1 { font-size: 40px; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .wish-head { flex-direction: column; }
+      .wish-list { grid-template-columns: 1fr; }
+      .metric { min-height: 96px; }
+      .viewbar { align-items: flex-start; flex-direction: column; }
+      .planner-head { flex-direction: column; }
+      .candidate-card { flex-basis: 210px; }
+      .filters { justify-content: flex-start; }
+      .cal-head { padding: 16px; }
+      .cal-title h2 { font-size: 23px; }
+      .cal-title span { display: none; }
+      .weekday { font-size: 10px; }
+      .day { min-height: 118px; padding: 6px; }
+      .day-num { width: 22px; height: 22px; font-size: 11px; }
+      .event { padding: 5px; border-left-width: 3px; }
+      .event .time { display: none; }
+      .day.weekend-drop::after { display: none; }
+      .event .name { font-size: 9px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+      .side-stack { grid-template-columns: 1fr; }
+      .detail-grid, .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      footer { flex-direction: column; }
+    }
+    @media print {
+      body { background: #fff; }
+      .shell { width: 100%; padding: 0; }
+      .top-actions, .viewbar, .cal-nav, footer, .toast { display: none !important; }
+      .hero { margin-bottom: 15px; }
+      h1 { font-size: 54px; }
+      .metrics { grid-template-columns: repeat(4, 1fr); }
+      .calendar-layout { grid-template-columns: 1fr 240px; }
+      .calendar-card, .side-card { box-shadow: none; }
+      .day { min-height: 104px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">FD</span><span>体验运营组 · CLASS EXPERIENCE</span></div>
+      <div class="top-actions">
+        <button class="btn small" id="downloadJson">备份数据</button>
+        <button class="btn small" id="downloadIcs">导出日历</button>
+        <a class="btn small accent text-plan-link" id="textPlanLink" href="activity-plan-text.html">文字版计划</a>
+        <button class="btn primary" id="addEventTop">＋ 添加活动</button>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">Class Experience Calendar</p>
+      <h1 id="page-title">班级活动日历</h1>
+      <p class="hero-subtitle">体验运营组 · 活动排期与筹备进度</p>
+    </section>
+
+    <section class="metrics" aria-label="活动概览">
+      <div class="metric"><span class="metric-value" id="metricAll">—</span><span class="metric-label">活动与固定节奏</span></div>
+      <div class="metric"><span class="metric-value" id="metricDated">—</span><span class="metric-label">已落实到具体日期</span></div>
+      <div class="metric"><span class="metric-value" id="metricRecurring">—</span><span class="metric-label">固定计划与节日提醒</span></div>
+      <div class="metric"><span class="metric-value" id="metricPlanning">—</span><span class="metric-label">仍需协调或排期</span></div>
+    </section>
+
+    <section class="wish-pool" aria-labelledby="wishPoolTitle">
+      <div class="wish-head">
+        <div class="wish-title">
+          <span class="wish-icon" aria-hidden="true">✦</span>
+          <div>
+            <h2 id="wishPoolTitle">班级许愿池 <span class="wish-count" id="wishCount">0</span></h2>
+            <p>想去哪里、什么时候、想玩什么，都可以先放进来。形式不限，先让好想法被看见。</p>
+          </div>
+        </div>
+        <button class="btn small primary" id="addWish" type="button">＋ 写下一个想法</button>
+      </div>
+      <div class="wish-layout">
+        <div class="wish-list" id="wishList" aria-live="polite"></div>
+        <aside class="wish-ranking" aria-labelledby="wishRankingTitle">
+          <div class="ranking-head"><h3 id="wishRankingTitle">意愿排行</h3><span class="sync-state offline" id="wishSyncState">连接中</span></div>
+          <div class="ranking-list" id="wishRanking" aria-live="polite"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="viewbar" aria-label="视图和筛选">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-view="calendar" role="tab" aria-selected="true">月历视图</button>
+        <button class="tab" data-view="board" role="tab" aria-selected="false">运营看板</button>
+      </div>
+      <div class="filters" id="filters" aria-label="按类型筛选"></div>
+    </section>
+
+    <section id="calendarView">
+      <section class="weekend-planner" aria-labelledby="weekendPlannerTitle">
+        <div class="planner-head">
+          <div>
+            <h2 id="weekendPlannerTitle">周末候选活动池</h2>
+            <p>从“粗门｜一起玩活动池”送入候选项目，再拖到日历中的周六或周日。拖入后默认标记为不定期活动。</p>
+          </div>
+          <div class="top-actions">
+            <button class="btn small" id="refreshCandidates" type="button">刷新候选</button>
+            <a class="btn small accent" href="cumen-weekend-picker.html">打开粗门活动池 →</a>
+          </div>
+        </div>
+        <div class="candidate-list" id="candidateList" aria-live="polite"></div>
+      </section>
+      <div class="calendar-layout">
+        <div class="calendar-card">
+          <div class="cal-head">
+            <div class="cal-title"><h2 id="monthTitle"></h2><span id="monthSummary"></span></div>
+            <div class="cal-nav">
+              <button class="btn icon" id="prevMonth" aria-label="上个月">←</button>
+              <button class="btn small accent" id="focusMonth">回到活动月</button>
+              <button class="btn icon" id="nextMonth" aria-label="下个月">→</button>
+            </div>
+          </div>
+          <div class="weekdays" aria-hidden="true">
+            <div class="weekday">周一</div><div class="weekday">周二</div><div class="weekday">周三</div><div class="weekday">周四</div><div class="weekday">周五</div><div class="weekday">周六</div><div class="weekday">周日</div>
+          </div>
+          <div class="days" id="calendarDays"></div>
+        </div>
+
+        <aside class="side-stack">
+          <section class="side-card">
+            <div class="side-card-head"><h3>本月待排期</h3><button class="btn tiny accent" id="addMonthEvent" type="button">＋ 添加</button></div>
+            <p>可直接选择日期并保存入库，也可编辑活动内容与排期。</p>
+            <div class="undated-list" id="monthPool"></div>
+          </section>
+          <section class="side-card">
+            <h3>固定计划与提醒</h3>
+            <p>固定星期和年度节日会自动进入日历。</p>
+            <div class="rhythm-list" id="rhythmList"></div>
+          </section>
+          <section class="side-card">
+            <h3>本月节日</h3>
+            <p>公历、农历和浮动节日自动换算。</p>
+            <div class="undated-list" id="holidayList"></div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section id="boardView" hidden>
+      <div class="board" id="board"></div>
+    </section>
+
+    <div class="legend" aria-label="活动类型图例">
+      <span><i class="dot" data-cat="运动"></i>运动体验</span>
+      <span><i class="dot" data-cat="社交"></i>社交共创</span>
+      <span><i class="dot" data-cat="分享"></i>分享学习</span>
+      <span><i class="dot" data-cat="综合"></i>综合活动</span>
+      <span><i class="dot" data-cat="节日"></i>节日提醒</span>
+      <span class="schedule-legend"><i class="schedule-swatch fixed"></i>固定活动</span>
+      <span><i class="schedule-swatch variable"></i>不定期活动</span>
+    </div>
+
+    <footer>
+      <div><strong>数据边界：</strong>班级活动依据原始文档及后续补充录入；常用公历、农历和浮动节日根据日期规则自动提醒，生日活动仍未录入。</div>
+      <div>许愿、投票和周日晚认领为班级共享实时数据；个人新增排期与候选活动仍保存在本浏览器。可随时下载 JSON 备份或导出 .ics 日历。</div>
+    </footer>
+  </main>
+
+  <dialog id="detailDialog">
+    <div class="dialog-body" id="detailBody"></div>
+  </dialog>
+
+  <dialog id="addDialog">
+    <form class="dialog-body" id="eventForm">
+      <div class="dialog-head">
+        <div><div class="detail-tag"><span class="dot"></span><span id="eventDialogMode">新增活动</span></div><h2 id="eventDialogTitle">把新想法放进来</h2></div>
+        <button class="close" type="button" data-close="addDialog" aria-label="关闭">×</button>
+      </div>
+      <div class="form-grid">
+        <div class="field full"><label for="eventTitle">活动名称 *</label><input id="eventTitle" name="title" required placeholder="例如：校友企业参访"></div>
+        <div class="field"><label for="eventDate">活动日期（可以先不填）</label><input id="eventDate" name="date" type="date"></div>
+        <div class="field"><label for="eventMonth">计划月份</label><input id="eventMonth" name="month" type="month"></div>
+        <div class="field"><label for="eventCategory">活动类型</label><select id="eventCategory" name="category"><option>分享</option><option>运动</option><option>社交</option><option>综合</option><option>节日</option></select></div>
+        <div class="field"><label for="eventScheduleKind">排期属性</label><select id="eventScheduleKind" name="scheduleKind"><option value="variable" selected>不定期活动</option><option value="fixed">固定活动</option></select></div>
+        <div class="field"><label for="eventStage">推进阶段</label><select id="eventStage" name="stage"><option value="planning">待协调</option><option value="recurring">固定节奏</option><option value="dated">已定日程</option></select></div>
+        <div class="field"><label for="eventLocation">地点</label><input id="eventLocation" name="location" placeholder="例如：校内 / 待定"></div>
+        <div class="field full"><label for="eventDescription">活动说明</label><textarea id="eventDescription" name="description" placeholder="目标、参与方式、需要协调的资源……"></textarea></div>
+      </div>
+      <p class="hint">填写具体日期后会自动进入月历；只填月份则会进入“本月待排期”。保存后立即写入当前浏览器活动库。</p>
+      <div class="form-actions"><button class="btn" type="button" data-close="addDialog">取消</button><button class="btn primary" id="eventSubmit" type="submit">保存活动</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="wishDialog">
+    <form class="dialog-body" id="wishForm">
+      <div class="dialog-head">
+        <div><div class="detail-tag"><span class="dot" style="background:var(--mint-deep)"></span>班级许愿池</div><h2>畅所欲言</h2></div>
+        <button class="close" type="button" data-close="wishDialog" aria-label="关闭">×</button>
+      </div>
+      <div class="form-grid">
+        <div class="field full"><label for="wishTitle">想法标题 *</label><input id="wishTitle" name="title" required placeholder="一句话说说你想做什么"></div>
+        <div class="field"><label for="wishType">大致方向</label><select id="wishType" name="type"><option>自由想法</option><option>运动体验</option><option>社交聚会</option><option>分享学习</option><option>参访旅行</option></select></div>
+        <div class="field"><label for="wishAuthor">署名（选填）</label><input id="wishAuthor" name="author" placeholder="留空即为匿名同学"></div>
+        <div class="field"><label for="wishTime">希望时间（选填）</label><input id="wishTime" name="time" placeholder="例如：11 月某个周末 / 工作日晚间"></div>
+        <div class="field"><label for="wishLocation">希望地点（选填）</label><input id="wishLocation" name="location" placeholder="例如：校内 / 浦东 / 周边城市"></div>
+        <div class="field full"><label for="wishContent">活动内容与想法 *</label><textarea id="wishContent" name="content" required placeholder="可以写活动内容、为什么想参加、适合什么人，以及任何需要协调的资源……"></textarea></div>
+      </div>
+      <p class="hint">除了标题和内容，其余信息都可以以后再补充。提交后全班都能看到并投票。</p>
+      <div class="form-actions"><button class="btn" type="button" data-close="wishDialog">取消</button><button class="btn primary" type="submit">投入许愿池</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const makeHoliday = (id, title, cadence, rule) => ({
+      id, title, date: null, month: null, cadence, ...rule,
+      category: "节日", stage: "reminder", status: "年度节日提醒",
+      scale: "节日提醒", location: "—", description: `${title}提醒。`, notes: []
+    });
+
+    const SEED_EVENTS = [
+      {
+        id: "biomed-2026-11-07",
+        title: "行业大咖面对面：生物医药主题讲座",
+        date: "2026-11-07",
+        month: "2026-11",
+        category: "分享",
+        stage: "dated",
+        status: "时间初步确定",
+        scale: "月度小活动",
+        location: "政立院区 · 具体教室待老师预定",
+        description: "邀请生物医药领域嘉宾开展行业分享。文档中已将 11 月 7 日作为与嘉宾初步确定的时间。",
+        notes: ["面向 23 级后 MBA 同学开放报名", "由贺老师协助通过小程序发布", "海报不使用学院 Logo，也不以学院名义发布", "如邀请校外人员，需另设报名入口"]
+      },
+      {
+        id: "pet-meetup-2026-11",
+        title: "宠物见面会",
+        date: null,
+        month: "2026-11",
+        category: "社交",
+        stage: "planning",
+        status: "待排期",
+        scale: "小活动",
+        location: "待定",
+        description: "以宠物为连接点的轻量班级社交活动。讨论中有明确支持，定位为 11 月小活动。",
+        notes: ["确认宠物友好场地", "提前收集参与人数与宠物信息", "补充现场秩序和安全安排"]
+      },
+      {
+        id: "holiday-new-year",
+        title: "元旦",
+        date: null,
+        month: null,
+        cadence: "每年 1 月 1 日",
+        annual: { month: 1, day: 1 },
+        category: "节日",
+        stage: "reminder",
+        status: "年度节日提醒",
+        scale: "节日提醒",
+        location: "—",
+        description: "每年 1 月 1 日的元旦提醒。",
+        notes: []
+      },
+      {
+        id: "holiday-national-day",
+        title: "国庆节",
+        date: null,
+        month: null,
+        cadence: "每年 10 月 1 日",
+        annual: { month: 10, day: 1 },
+        category: "节日",
+        stage: "reminder",
+        status: "年度节日提醒",
+        scale: "节日提醒",
+        location: "—",
+        description: "每年 10 月 1 日的国庆节提醒。",
+        notes: []
+      },
+      {
+        id: "holiday-halloween",
+        title: "万圣节",
+        date: null,
+        month: null,
+        cadence: "每年 10 月 31 日",
+        annual: { month: 10, day: 31 },
+        category: "节日",
+        stage: "reminder",
+        status: "年度节日提醒",
+        scale: "节日提醒",
+        location: "—",
+        description: "每年 10 月 31 日的万圣节提醒。",
+        notes: []
+      },
+      {
+        id: "holiday-christmas",
+        title: "圣诞节",
+        date: null,
+        month: null,
+        cadence: "每年 12 月 25 日",
+        annual: { month: 12, day: 25 },
+        category: "节日",
+        stage: "reminder",
+        status: "年度节日提醒",
+        scale: "节日提醒",
+        location: "—",
+        description: "每年 12 月 25 日的圣诞节提醒。",
+        notes: []
+      },
+      {
+        id: "halloween-costume-contest-2026",
+        title: "万圣节装扮比拼",
+        date: "2026-10-31",
+        month: "2026-10",
+        cadence: "10 月 31 日",
+        category: "社交",
+        stage: "dated",
+        scheduleKind: "variable",
+        status: "活动已纳入日历 · 细节待协调",
+        scale: "节日主题活动",
+        location: "待定",
+        description: "结合万圣节开展班级装扮比拼，鼓励同学自由发挥创意并参与现场互动。",
+        notes: ["确认活动地点与具体开始时间", "完善装扮主题、评选规则和奖项", "补充报名方式与现场拍照安排"]
+      },
+      {
+        id: "christmas-party-2026",
+        title: "圣诞节 Party",
+        date: "2026-12-25",
+        month: "2026-12",
+        cadence: "12 月 25 日",
+        category: "社交",
+        stage: "dated",
+        scheduleKind: "variable",
+        status: "活动已纳入日历 · 细节待协调",
+        scale: "节日主题活动",
+        location: "待定",
+        description: "在圣诞节组织班级 Party，通过轻松聚会、互动游戏和节日环节增进同学交流。",
+        notes: ["确认场地与具体开始时间", "策划互动游戏、交换礼物等环节", "补充报名、费用及现场分工"]
+      },
+      makeHoliday("holiday-valentine", "情人节", "每年 2 月 14 日", { annual: { month: 2, day: 14 } }),
+      makeHoliday("holiday-womens-day", "妇女节", "每年 3 月 8 日", { annual: { month: 3, day: 8 } }),
+      makeHoliday("holiday-arbor-day", "植树节", "每年 3 月 12 日", { annual: { month: 3, day: 12 } }),
+      makeHoliday("holiday-april-fools", "愚人节", "每年 4 月 1 日", { annual: { month: 4, day: 1 } }),
+      makeHoliday("holiday-qingming", "清明节", "每年清明节气", { calculated: "qingming" }),
+      makeHoliday("holiday-labor-day", "劳动节", "每年 5 月 1 日", { annual: { month: 5, day: 1 } }),
+      makeHoliday("holiday-youth-day", "青年节", "每年 5 月 4 日", { annual: { month: 5, day: 4 } }),
+      makeHoliday("holiday-mothers-day", "母亲节", "每年 5 月第二个星期日", { floating: { month: 5, weekday: 0, ordinal: 2 } }),
+      makeHoliday("holiday-childrens-day", "儿童节", "每年 6 月 1 日", { annual: { month: 6, day: 1 } }),
+      makeHoliday("holiday-fathers-day", "父亲节", "每年 6 月第三个星期日", { floating: { month: 6, weekday: 0, ordinal: 3 } }),
+      makeHoliday("holiday-party-day", "建党节", "每年 7 月 1 日", { annual: { month: 7, day: 1 } }),
+      makeHoliday("holiday-army-day", "建军节", "每年 8 月 1 日", { annual: { month: 8, day: 1 } }),
+      makeHoliday("holiday-teachers-day", "教师节", "每年 9 月 10 日", { annual: { month: 9, day: 10 } }),
+      makeHoliday("holiday-thanksgiving", "感恩节", "每年 11 月第四个星期四", { floating: { month: 11, weekday: 4, ordinal: 4 } }),
+      makeHoliday("holiday-lunar-eve", "除夕", "农历年末最后一天", { lunarEve: true }),
+      makeHoliday("holiday-spring-festival", "春节", "农历正月初一", { lunar: { month: 1, day: 1 } }),
+      makeHoliday("holiday-lantern-festival", "元宵节", "农历正月十五", { lunar: { month: 1, day: 15 } }),
+      makeHoliday("holiday-dragon-boat", "端午节", "农历五月初五", { lunar: { month: 5, day: 5 } }),
+      makeHoliday("holiday-qixi", "七夕", "农历七月初七", { lunar: { month: 7, day: 7 } }),
+      makeHoliday("holiday-mid-autumn", "中秋节", "农历八月十五", { lunar: { month: 8, day: 15 } }),
+      makeHoliday("holiday-double-ninth", "重阳节", "农历九月初九", { lunar: { month: 9, day: 9 } }),
+      makeHoliday("holiday-laba", "腊八节", "农历腊月初八", { lunar: { month: 12, day: 8 } }),
+      {
+        id: "weekly-sports",
+        title: "每周运动报名",
+        date: null,
+        month: null,
+        cadence: "每周",
+        category: "运动",
+        stage: "recurring",
+        status: "持续进行",
+        scale: "固定节奏",
+        location: "随活动确定",
+        description: "支持同学参与户外协会跑步、健身等活动，由爱好者发起，体验运营组负责信息发布和报名支持。",
+        notes: ["由参与同学轮流认领", "每周在班级群发布", "后续可逐次补充具体日期和项目"]
+      },
+      {
+        id: "shasha-wed-interval",
+        title: "运动 · 间歇跑合练",
+        date: null,
+        month: null,
+        cadence: "每周三 · 19:00",
+        recurrence: { days: [3], time: "19:00" },
+        category: "运动",
+        stage: "recurring",
+        status: "每周固定合练",
+        scale: "固定运动",
+        location: "南操",
+        description: "每周三开展间歇跑合练，19:00 拍照集合后进行集体动态热身。",
+        notes: ["19:00 拍照集合", "集体动态热身", "地点：南操"]
+      },
+      {
+        id: "shasha-fri-strength",
+        title: "运动 · 力量训练合练",
+        date: null,
+        month: null,
+        cadence: "每周五 · 19:00",
+        recurrence: { days: [5], time: "19:00" },
+        category: "运动",
+        stage: "recurring",
+        status: "每周固定合练",
+        scale: "固定运动",
+        location: "上海市浦东新区世博大道1368号世博源3区1楼-3L111",
+        description: "每周五开展力量训练合练，19:00 集合。",
+        notes: ["19:00 集合", "合练场地：世博源3区1楼-3L111", "交通：地铁8号线中华艺术宫站"]
+      },
+      {
+        id: "shasha-weekend-hill",
+        title: "运动 · 佘山爬坡",
+        date: null,
+        month: null,
+        cadence: "每周六 · 8:30",
+        recurrence: { days: [6], time: "8:30" },
+        category: "运动",
+        stage: "recurring",
+        status: "每周六固定合练",
+        scale: "周末运动",
+        location: "佘山西大门 · 外青松公路9258号",
+        description: "每周六开展佘山爬坡合练，8:30 在佘山西大门集合。",
+        notes: ["每周六 8:30 佘山西大门集合", "地址：外青松公路9258号"]
+      },
+      {
+        id: "weekly-sunday-class-sports",
+        title: "班级运动",
+        date: null,
+        month: null,
+        cadence: "每周日 · 下午",
+        recurrence: { days: [0], time: "下午" },
+        category: "运动",
+        stage: "recurring",
+        scheduleKind: "fixed",
+        status: "运动内容待定",
+        scale: "固定运动",
+        location: "待定",
+        description: "每周日下午开展班级运动，具体运动内容待定。",
+        notes: ["具体运动内容待定", "具体时间与地点以班级群通知为准"]
+      },
+      {
+        id: "weekly-sunday-relaxation",
+        title: "放松计划 · 待定",
+        date: null,
+        month: null,
+        cadence: "每周日 · 晚上",
+        recurrence: { days: [0], time: "晚上" },
+        category: "社交",
+        stage: "recurring",
+        scheduleKind: "fixed",
+        status: "等待同学认领",
+        scale: "固定放松计划",
+        location: "待定",
+        description: "每周日晚上安排一次轻松的班级放松计划，具体形式由认领同学共同商定。",
+        notes: ["每一期支持多位同学共同认领", "同一位同学可以认领多个周日计划", "具体内容、时间与地点由认领同学补充"]
+      },
+      {
+        id: "weekly-gathering",
+        title: "班级小聚 / 小组聚餐",
+        date: null,
+        month: null,
+        cadence: "每周",
+        category: "社交",
+        stage: "recurring",
+        status: "可认领",
+        scale: "固定节奏",
+        location: "由发起小组确定",
+        description: "把各小组原有的私下聚会纳入班级活动节奏，每周由参与小组认领一次轻量聚会。",
+        notes: ["发起小组发布信息", "参与名单可用于活动记录", "聚餐不是强制形式，可替换为其他轻社交活动"]
+      },
+      {
+        id: "monthly-program",
+        title: "每月一场重点活动 + 一场轻分享",
+        date: null,
+        month: null,
+        cadence: "每月",
+        category: "综合",
+        stage: "recurring",
+        status: "运营目标",
+        scale: "固定节奏",
+        location: "待定",
+        description: "每月安排一个重点活动，同时配置一场小型讲座、访谈或探访，形成班级稳定的体验节奏。",
+        notes: ["重点活动尽量提前一个月启动筹备", "轻分享可调用同学或校友资源", "与学校每周活动要求协同排布"]
+      },
+      {
+        id: "fun-sports-day",
+        title: "聚劲周 · 趣味运动会",
+        date: "2026-11-21",
+        endDate: "2026-11-22",
+        month: "2026-11",
+        cadence: "11 月 21—22 日",
+        category: "综合",
+        stage: "dated",
+        status: "日期已标记 · 方案计划中",
+        scale: "聚劲周班级活动",
+        location: "待定",
+        description: "11 月 21—22 日为聚劲周，期间将组织班级活动，目前计划方案为趣味运动会。",
+        notes: ["落实趣味运动项目和活动流程", "确认场地、参与人数及协作分工", "如方案调整，保留聚劲周日期标记并更新活动形式"]
+      },
+      {
+        id: "industry-forum",
+        title: "产业论坛：不动产 × 运动产业",
+        date: null,
+        month: null,
+        cadence: "待定",
+        category: "分享",
+        stage: "planning",
+        status: "联合策划中",
+        scale: "重点活动",
+        location: "待定",
+        description: "与复旦不动产协会、复旦运动产业协会联合策划产业论坛，形式包含主题分享和参观。",
+        notes: ["确认联合主办方分工", "落实参观地点与嘉宾", "明确是否面向其他班级开放"]
+      },
+      {
+        id: "multi-sport",
+        title: "多元运动体验：抱石 / Padel 等",
+        date: null,
+        month: null,
+        cadence: "可随时组织",
+        category: "运动",
+        stage: "planning",
+        status: "资源已就绪",
+        scale: "机动活动",
+        location: "按项目确定",
+        description: "根据同学兴趣组织抱石、Padel 等入门体验，现场教学和组织资源可协调。",
+        notes: ["确定时间后在班级群发布报名", "预计人均费用可控制在 100 元以内", "场地和现场教学由资源方协助"]
+      },
+      {
+        id: "ski-trip",
+        title: "长白山滑雪与温泉",
+        date: null,
+        month: null,
+        cadence: "学期后段",
+        category: "运动",
+        stage: "planning",
+        status: "意向收集中",
+        scale: "重点活动",
+        location: "长白山",
+        description: "面向不同滑雪基础的同学组织长白山滑雪，并结合温泉体验；优先选择初学者友好雪道。",
+        notes: ["确认意向人数与可行日期", "比较交通、住宿和雪票方案", "明确费用由参与同学自理的部分"]
+      }
+    ];
+
+    const STORAGE_KEY = "fd-class-experience-events-v1";
+    const CANDIDATE_KEY = "fd-cumen-candidates-v1";
+    const WISH_KEY = "fd-class-experience-wishes-v1";
+    const CLAIM_KEY = "fd-class-relaxation-claims-v1";
+    const ACTOR_KEY = "fd-class-community-actor-v1";
+    const NICKNAME_KEY = "fd-class-community-nickname-v1";
+    const SHARED_API_ORIGIN = "https://fdmba-2026-class-activity-hub.sure-hill-0440.chatgpt.site";
+    const categories = ["全部", "运动", "社交", "分享", "综合", "节日"];
+    const stageMeta = {
+      dated: { title: "已定日程", note: "已有具体日期，可以进入发布与执行。" },
+      recurring: { title: "固定计划与提醒", note: "按周、按月或按年自动显示。" },
+      planning: { title: "待协调排期", note: "需要确认时间、场地或协作资源。" },
+      reminder: { title: "节日提醒", note: "按公历、农历或星期规则自动计算。" }
+    };
+    const categoryColor = { "运动": "#4f9b7d", "社交": "#ff836d", "分享": "#89b9d2", "综合": "#aa9bd1", "节日": "#d6a24f" };
+
+    let events = loadEvents();
+    let candidates = loadCandidates();
+    let wishes = loadWishes();
+    let relaxationClaims = loadClaims();
+    let sharedDataOnline = false;
+    let communityRefreshing = false;
+    let activeDetail = null;
+    let selectedCategory = "全部";
+    let cursor = new Date(2026, 10, 1);
+    let editingEventId = null;
+
+    const $ = (q, root = document) => root.querySelector(q);
+    const $$ = (q, root = document) => [...root.querySelectorAll(q)];
+    const lunarFormatter = new Intl.DateTimeFormat("en-u-ca-chinese", { month: "numeric", day: "numeric" });
+
+    function actorId() {
+      let id = localStorage.getItem(ACTOR_KEY);
+      if (!id) {
+        id = crypto.randomUUID ? crypto.randomUUID() : `browser-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        localStorage.setItem(ACTOR_KEY, id);
+      }
+      return id;
+    }
+
+    function lunarParts(date) {
+      const parts = lunarFormatter.formatToParts(date);
+      const monthText = parts.find(p => p.type === "month")?.value || "";
+      const dayText = parts.find(p => p.type === "day")?.value || "";
+      return { month: Number.parseInt(monthText, 10), day: Number.parseInt(dayText, 10), leap: /bis|闰/i.test(monthText) };
+    }
+    function holidayOccursOn(e, date) {
+      if (e.annual) return date.getMonth() + 1 === e.annual.month && date.getDate() === e.annual.day;
+      if (e.floating) {
+        if (date.getMonth() + 1 !== e.floating.month || date.getDay() !== e.floating.weekday) return false;
+        return Math.floor((date.getDate() - 1) / 7) + 1 === e.floating.ordinal;
+      }
+      if (e.calculated === "qingming") {
+        const y = date.getFullYear() % 100;
+        const day = Math.floor(y * 0.2422 + 4.81) - Math.floor(y / 4);
+        return date.getMonth() === 3 && date.getDate() === day;
+      }
+      if (e.lunar) {
+        const lunar = lunarParts(date);
+        return !lunar.leap && lunar.month === e.lunar.month && lunar.day === e.lunar.day;
+      }
+      if (e.lunarEve) {
+        const tomorrow = new Date(date); tomorrow.setDate(tomorrow.getDate() + 1);
+        const lunar = lunarParts(tomorrow);
+        return !lunar.leap && lunar.month === 1 && lunar.day === 1;
+      }
+      return false;
+    }
+
+    function loadEvents() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!Array.isArray(saved) || !saved.length) return structuredClone(SEED_EVENTS);
+        const syncedIds = ["fun-sports-day", "halloween-costume-contest-2026", "christmas-party-2026", "shasha-wed-interval", "shasha-fri-strength", "shasha-weekend-hill", "weekly-sunday-class-sports", "weekly-sunday-relaxation", ...SEED_EVENTS.filter(e => e.category === "节日").map(e => e.id)];
+        const seeds = new Map(SEED_EVENTS.map(e => [e.id, e]));
+        const merged = saved.map(e => syncedIds.includes(e.id) ? structuredClone(seeds.get(e.id)) : e);
+        syncedIds.forEach(id => { if (!merged.some(e => e.id === id)) merged.push(structuredClone(seeds.get(id))); });
+        return merged;
+      } catch (_) { return structuredClone(SEED_EVENTS); }
+    }
+    function saveEvents() { localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); }
+    function loadCandidates() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(CANDIDATE_KEY));
+        return Array.isArray(saved) ? saved : [];
+      } catch (_) { return []; }
+    }
+    function saveCandidates() { localStorage.setItem(CANDIDATE_KEY, JSON.stringify(candidates)); }
+    function loadWishes() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(WISH_KEY));
+        return Array.isArray(saved) ? saved.map(wish => ({ voteCount: 0, voted: false, ...wish })) : [];
+      } catch (_) { return []; }
+    }
+    function saveWishes() { localStorage.setItem(WISH_KEY, JSON.stringify(wishes)); }
+    function loadClaims() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(CLAIM_KEY));
+        return Array.isArray(saved) ? saved : [];
+      } catch (_) { return []; }
+    }
+    function saveClaims() { localStorage.setItem(CLAIM_KEY, JSON.stringify(relaxationClaims)); }
+    function claimsFor(planKey) { return relaxationClaims.filter(claim => claim.planKey === planKey); }
+    function scheduleKind(e) {
+      if (e.category === "节日" || e.stage === "reminder") return "reminder";
+      return e.scheduleKind || (e.stage === "recurring" ? "fixed" : "variable");
+    }
+    function scheduleLabel(e) {
+      const kind = scheduleKind(e);
+      return kind === "fixed" ? "固定活动" : kind === "reminder" ? "节日提醒" : "不定期活动";
+    }
+    function filtered(list = events) { return selectedCategory === "全部" ? list : list.filter(e => e.category === selectedCategory); }
+    function monthKey(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`; }
+    function zhDate(value) {
+      if (!value) return "待定";
+      const d = new Date(`${value}T12:00:00`);
+      return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "short" }).format(d);
+    }
+    function zhWhen(e) {
+      if (e.annual) return `每年 ${e.annual.month} 月 ${e.annual.day} 日`;
+      if (!e.date) return e.month ? `${Number(e.month.slice(5))} 月内待排期` : (e.cadence || "待定");
+      if (!e.endDate || e.endDate === e.date) return zhDate(e.date);
+      const start = new Date(`${e.date}T12:00:00`);
+      const end = new Date(`${e.endDate}T12:00:00`);
+      const startText = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "short" }).format(start);
+      const endText = new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "short" }).format(end);
+      return `${startText} — ${endText}`;
+    }
+    function occursOn(e, iso) { return Boolean(e.date && e.date <= iso && (e.endDate || e.date) >= iso); }
+    function escapeHTML(value = "") {
+      return String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+    }
+    function titleHTML(e) {
+      return `${escapeHTML(e.title)}${e.teamLabel ? `<small class="team-label">${escapeHTML(e.teamLabel)}</small>` : ""}`;
+    }
+    function plainTitle(e) { return e.teamLabel ? `${e.title} · ${e.teamLabel}` : e.title; }
+    function showToast(message) {
+      const el = $("#toast"); el.textContent = message; el.classList.add("show");
+      clearTimeout(showToast.timer); showToast.timer = setTimeout(() => el.classList.remove("show"), 2200);
+    }
+
+    function openEventEditor(id = null, defaults = {}) {
+      const form = $("#eventForm");
+      form.reset();
+      editingEventId = id;
+      const current = id ? events.find(item => item.id === id) : null;
+      $("#eventDialogMode").textContent = current ? "编辑活动" : "新增活动";
+      $("#eventDialogTitle").textContent = current ? "修改内容与排期" : "把新想法放进来";
+      $("#eventSubmit").textContent = current ? "保存修改" : "保存活动";
+      if (current) {
+        form.elements.title.value = current.title || "";
+        form.elements.date.value = current.date || "";
+        form.elements.month.value = current.month || (current.date ? current.date.slice(0, 7) : "");
+        form.elements.category.value = current.category || "综合";
+        form.elements.scheduleKind.value = scheduleKind(current) === "fixed" ? "fixed" : "variable";
+        form.elements.stage.value = current.stage || (current.date ? "dated" : "planning");
+        form.elements.location.value = current.location || "";
+        form.elements.description.value = current.description || "";
+      } else {
+        form.elements.month.value = defaults.month || "";
+        form.elements.category.value = defaults.category || "分享";
+        form.elements.scheduleKind.value = "variable";
+        form.elements.stage.value = "planning";
+      }
+      $("#addDialog").showModal();
+    }
+
+    function renderWishes() {
+      $("#wishCount").textContent = wishes.length;
+      const root = $("#wishList");
+      if (!wishes.length) {
+        root.innerHTML = `<div class="wish-empty">还没有人许愿。无论是一次聚会、一个地点，还是一个模糊的念头，都可以成为第一个想法。</div>`;
+      } else {
+        root.innerHTML = wishes.map(wish => `
+          <article class="wish-card">
+            <span class="wish-type">${escapeHTML(wish.type || "自由想法")}</span>
+            <h3>${escapeHTML(wish.title)}</h3>
+            <p>${escapeHTML(wish.content)}</p>
+            <div class="wish-meta">
+              ${wish.time ? `<span>时间 · ${escapeHTML(wish.time)}</span>` : ""}
+              ${wish.location ? `<span>地点 · ${escapeHTML(wish.location)}</span>` : ""}
+              <span>${escapeHTML(wish.author || "匿名同学")}</span>
+            </div>
+            <button class="wish-vote ${wish.voted ? "voted" : ""}" type="button" data-vote-wish="${escapeHTML(wish.id)}" aria-pressed="${wish.voted ? "true" : "false"}">
+              <span>${wish.voted ? "♥ 已支持" : "♡ 点赞 / 投票"}</span><b>${Number(wish.voteCount || 0)} 票</b>
+            </button>
+          </article>`).join("");
+        $$('[data-vote-wish]').forEach(button => button.addEventListener("click", () => toggleWishVote(button.dataset.voteWish, button)));
+      }
+      renderWishRanking();
+    }
+
+    function renderWishRanking() {
+      const ranked = [...wishes].sort((a, b) => Number(b.voteCount || 0) - Number(a.voteCount || 0) || String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+      const maxVotes = Math.max(1, ...ranked.map(wish => Number(wish.voteCount || 0)));
+      $("#wishRanking").innerHTML = ranked.length ? ranked.slice(0, 8).map((wish, index) => `
+        <div class="rank-row">
+          <span class="rank-no">${index + 1}</span>
+          <div class="rank-copy"><strong>${escapeHTML(wish.title)}</strong><div class="rank-bar"><i style="width:${Math.max(5, Number(wish.voteCount || 0) / maxVotes * 100)}%"></i></div></div>
+          <span class="rank-votes">${Number(wish.voteCount || 0)} 票</span>
+        </div>`).join("") : `<div class="ranking-empty">许下第一个愿望后，意愿排行会在这里实时出现。</div>`;
+    }
+
+    function setWishSyncState(online) {
+      const el = $("#wishSyncState");
+      el.classList.toggle("offline", !online);
+      el.textContent = online ? "实时同步" : "本机预览";
+    }
+
+    async function refreshCommunityData({ quiet = true } = {}) {
+      if (communityRefreshing) return;
+      communityRefreshing = true;
+      try {
+        const id = actorId();
+        const [wishResponse, claimResponse] = await Promise.all([
+          fetch(`${SHARED_API_ORIGIN}/api/wishes?voter=${encodeURIComponent(id)}`, { cache: "no-store" }),
+          fetch(`${SHARED_API_ORIGIN}/api/relaxation-claims?participant=${encodeURIComponent(id)}`, { cache: "no-store" })
+        ]);
+        if (!wishResponse.ok || !claimResponse.ok) throw new Error("shared data unavailable");
+        const wishData = await wishResponse.json();
+        const claimData = await claimResponse.json();
+        wishes = Array.isArray(wishData.wishes) ? wishData.wishes : [];
+        relaxationClaims = Array.isArray(claimData.claims) ? claimData.claims : [];
+        sharedDataOnline = true;
+        setWishSyncState(true);
+        renderWishes();
+        renderCalendar();
+        if (activeDetail?.id === "weekly-sunday-relaxation" && $("#detailDialog").open) openDetail(activeDetail.id, activeDetail.occurrenceDate, true);
+      } catch (_) {
+        sharedDataOnline = false;
+        setWishSyncState(false);
+        if (!quiet) showToast("共享数据暂时无法连接，已切换到本机模式");
+      } finally {
+        communityRefreshing = false;
+      }
+    }
+
+    async function toggleWishVote(wishId, button) {
+      const wish = wishes.find(item => item.id === wishId);
+      if (!wish) return;
+      button.disabled = true;
+      if (sharedDataOnline) {
+        try {
+          const response = await fetch(`${SHARED_API_ORIGIN}/api/wishes/${encodeURIComponent(wishId)}/vote`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ voterId: actorId() })
+          });
+          if (!response.ok) throw new Error("vote failed");
+          const result = await response.json();
+          wish.voted = Boolean(result.voted);
+          wish.voteCount = Number(result.voteCount || 0);
+          renderWishes();
+          showToast(wish.voted ? "已投票，感谢支持" : "已取消这一票");
+          return;
+        } catch (_) {
+          sharedDataOnline = false;
+          setWishSyncState(false);
+        }
+      }
+      wish.voted = !wish.voted;
+      wish.voteCount = Math.max(0, Number(wish.voteCount || 0) + (wish.voted ? 1 : -1));
+      saveWishes();
+      renderWishes();
+      showToast(wish.voted ? "已在本机记录这一票" : "已在本机取消投票");
+    }
+
+    function importCandidateFromQuery() {
+      const url = new URL(window.location.href);
+      const token = url.searchParams.get("candidate");
+      if (!token) return;
+      try {
+        const normalized = token.replace(/-/g, "+").replace(/_/g, "/");
+        const padded = normalized + "=".repeat((4 - normalized.length % 4) % 4);
+        const bytes = Uint8Array.from(atob(padded), char => char.charCodeAt(0));
+        const candidate = JSON.parse(new TextDecoder().decode(bytes));
+        if (candidate?.id && candidate?.title && !candidates.some(item => item.id === candidate.id)) {
+          candidates.push(candidate);
+          saveCandidates();
+          if (candidate.sourceDate) {
+            const date = new Date(`${candidate.sourceDate}T12:00:00`);
+            if (!Number.isNaN(date.getTime())) cursor = new Date(date.getFullYear(), date.getMonth(), 1);
+          }
+          showToast("已从粗门活动池接收候选活动");
+        }
+      } catch (_) {
+        showToast("候选活动链接无法识别");
+      }
+      url.searchParams.delete("candidate");
+      history.replaceState({}, "", url.href);
+    }
+
+    function renderCandidates() {
+      const root = $("#candidateList");
+      if (!candidates.length) {
+        root.innerHTML = `<div class="candidate-empty">候选池还是空的。先打开“粗门活动池”，把合适的周末活动送进来。</div>`;
+        return;
+      }
+      root.innerHTML = candidates.map(candidate => `
+        <div class="candidate-card" draggable="true" data-candidate-id="${escapeHTML(candidate.id)}" tabindex="0">
+          <button class="candidate-remove" type="button" data-remove-candidate="${escapeHTML(candidate.id)}" aria-label="移除候选活动">×</button>
+          <small>粗门｜一起玩 · 不定期活动</small>
+          <strong>${escapeHTML(candidate.title)}</strong>
+          <span>${escapeHTML(candidate.sourceDate ? zhDate(candidate.sourceDate) : "日期待选")}${candidate.time ? ` · ${escapeHTML(candidate.time)}` : ""}${candidate.location ? `<br>${escapeHTML(candidate.location)}` : ""}</span>
+        </div>`).join("");
+      $$(".candidate-card").forEach(card => {
+        card.addEventListener("dragstart", event => {
+          card.classList.add("dragging");
+          event.dataTransfer.effectAllowed = "copy";
+          event.dataTransfer.setData("text/plain", card.dataset.candidateId);
+        });
+        card.addEventListener("dragend", () => card.classList.remove("dragging"));
+      });
+      $$('[data-remove-candidate]').forEach(button => button.addEventListener("click", event => {
+        event.stopPropagation();
+        candidates = candidates.filter(item => item.id !== button.dataset.removeCandidate);
+        saveCandidates(); renderCandidates(); showToast("已移出候选池");
+      }));
+    }
+
+    function bindWeekendDropTargets() {
+      $$(".day.weekend-drop").forEach(day => {
+        day.addEventListener("dragover", event => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "copy";
+          day.classList.add("drag-over");
+        });
+        day.addEventListener("dragleave", () => day.classList.remove("drag-over"));
+        day.addEventListener("drop", event => {
+          event.preventDefault();
+          day.classList.remove("drag-over");
+          scheduleCandidate(event.dataTransfer.getData("text/plain"), day.dataset.date);
+        });
+      });
+    }
+
+    function scheduleCandidate(candidateId, date) {
+      const candidate = candidates.find(item => item.id === candidateId);
+      if (!candidate) return;
+      if (candidate.sourceDate && candidate.sourceDate !== date) {
+        showToast(`该活动原定 ${candidate.sourceDate}，请拖到同一天`);
+        return;
+      }
+      if (events.some(event => event.sourceCandidateId === candidate.id && event.date === date)) {
+        showToast("这个活动已经排进当天日历");
+        return;
+      }
+      events.push({
+        id: `cumen-${Date.now()}`,
+        sourceCandidateId: candidate.id,
+        sourceUrl: candidate.sourceUrl || "",
+        title: candidate.title,
+        date,
+        month: date.slice(0, 7),
+        category: "运动",
+        scheduleKind: "variable",
+        stage: "dated",
+        status: "候选活动 · 待确认报名",
+        scale: "周末运动",
+        location: candidate.location || "以粗门活动页为准",
+        description: candidate.notes || "来自“粗门｜一起玩”活动池的周末候选活动。",
+        notes: [candidate.time ? `活动时间：${candidate.time}` : "活动时间以来源页为准", candidate.sourceUrl ? `来源链接：${candidate.sourceUrl}` : "来源：粗门｜一起玩"]
+      });
+      candidates = candidates.filter(item => item.id !== candidate.id);
+      saveEvents(); saveCandidates(); renderAll(); showToast("已放入周末日历，标记为不定期活动");
+    }
+
+    function renderMetrics() {
+      $("#metricAll").textContent = events.length;
+      $("#metricDated").textContent = events.filter(e => e.date).length;
+      $("#metricRecurring").textContent = events.filter(e => e.stage === "recurring" || e.stage === "reminder").length;
+      $("#metricPlanning").textContent = events.filter(e => e.stage === "planning").length;
+    }
+
+    function renderFilters() {
+      $("#filters").innerHTML = categories.map(cat => `<button class="filter ${selectedCategory === cat ? "active" : ""}" data-category="${cat}">${cat}</button>`).join("");
+      $$(".filter").forEach(btn => btn.addEventListener("click", () => {
+        selectedCategory = btn.dataset.category; renderAll();
+      }));
+    }
+
+    function renderCalendar() {
+      const year = cursor.getFullYear();
+      const month = cursor.getMonth();
+      const key = monthKey(cursor);
+      const title = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long" }).format(cursor);
+      const monthStart = `${key}-01`;
+      const monthEnd = `${key}-${String(new Date(year, month + 1, 0).getDate()).padStart(2, "0")}`;
+      const exact = filtered().filter(e => e.date && e.date <= monthEnd && (e.endDate || e.date) >= monthStart);
+      const weekly = filtered().filter(e => Array.isArray(e.recurrence?.days) && e.recurrence.days.length);
+      const holidays = filtered().filter(e => e.category === "节日");
+      const holidayOccurrences = [];
+      for (let day = 1; day <= new Date(year, month + 1, 0).getDate(); day++) {
+        const date = new Date(year, month, day, 12);
+        const iso = `${year}-${String(month + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+        holidays.forEach(event => { if (holidayOccursOn(event, date)) holidayOccurrences.push({ event, iso, day }); });
+      }
+      $("#monthTitle").textContent = title;
+      $("#monthSummary").textContent = `${exact.length} 个已定活动 · ${weekly.length} 项每周计划${holidayOccurrences.length ? ` · ${holidayOccurrences.length} 个节日提醒` : ""}`;
+
+      const first = new Date(year, month, 1);
+      const gridStart = new Date(year, month, 1 - ((first.getDay() + 6) % 7));
+      const today = new Date();
+      const cells = [];
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(gridStart); d.setDate(gridStart.getDate() + i);
+        const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+        const datedEvents = exact.filter(e => occursOn(e, iso));
+        const recurringEvents = d.getMonth() === month ? weekly.filter(e => e.recurrence.days.includes(d.getDay())) : [];
+        const holidayEvents = d.getMonth() === month ? holidayOccurrences.filter(item => item.iso === iso).map(item => item.event) : [];
+        const dayEvents = [...datedEvents, ...recurringEvents, ...holidayEvents];
+        const isToday = d.toDateString() === today.toDateString();
+        const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+        cells.push(`<div class="day ${d.getMonth() !== month ? "muted" : ""} ${isToday ? "today" : ""} ${dayEvents.length ? "has-event" : ""} ${d.getMonth() === month && isWeekend ? "weekend-drop" : ""}" data-date="${iso}" data-weekday="${d.getDay()}">
+          <span class="day-num">${d.getDate()}</span>
+          ${dayEvents.map(e => {
+            const claimCount = e.id === "weekly-sunday-relaxation" ? claimsFor(iso).length : 0;
+            return `<button class="event" data-id="${e.id}" data-occurrence="${iso}" data-cat="${e.category}" data-schedule="${scheduleKind(e)}"><span class="time">${e.category === "节日" ? "节日提醒" : (e.endDate ? (iso === e.date ? "第 1 天" : "第 2 天") : (e.recurrence?.time ? `${e.recurrence.time}${e.recurrence.oneOf ? " · 周末择一" : ""}` : "全天"))} · ${scheduleLabel(e)}</span><span class="name">${titleHTML(e)}${e.id === "weekly-sunday-relaxation" ? `<small class="team-label">${claimCount ? `已认领 ${claimCount} 人` : "等待认领"}</small>` : ""}</span></button>`;
+          }).join("")}
+        </div>`);
+      }
+      $("#calendarDays").innerHTML = cells.join("");
+      $$(".event").forEach(el => el.addEventListener("click", () => openDetail(el.dataset.id, el.dataset.occurrence)));
+      bindWeekendDropTargets();
+
+      const monthPool = filtered().filter(e => !e.date && e.month === key);
+      $("#monthPool").innerHTML = monthPool.length ? monthPool.map(e => scheduleCard(e, monthStart, monthEnd)).join("") : `<div class="mini-card"><small>这个月暂时没有待排期活动，可点击上方“添加”创建。</small></div>`;
+      $$("#monthPool [data-open-detail]").forEach(el => el.addEventListener("click", () => openDetail(el.dataset.openDetail)));
+      $$("#monthPool [data-edit-event]").forEach(el => el.addEventListener("click", () => openEventEditor(el.dataset.editEvent)));
+      $$("#monthPool [data-commit-schedule]").forEach(el => el.addEventListener("click", () => {
+        const entry = el.closest(".schedule-entry");
+        commitSchedule(el.dataset.commitSchedule, entry.querySelector("input[type='date']").value);
+      }));
+
+      const rhythms = filtered().filter(e => e.stage === "recurring");
+      $("#rhythmList").innerHTML = rhythms.length ? rhythms.map(e => `<div class="rhythm"><div class="rhythm-badge">${escapeHTML(e.cadence || "固定")}</div><div><strong>${titleHTML(e)}</strong><small>${escapeHTML(e.category)} · ${escapeHTML(e.status)}</small></div></div>`).join("") : `<small class="hint">当前筛选下没有固定节奏</small>`;
+
+      $("#holidayList").innerHTML = holidayOccurrences.length ? holidayOccurrences.map(item => `<button class="mini-card" data-id="${item.event.id}"><span class="tag"><i class="dot" style="background:${categoryColor["节日"]}"></i>${month + 1} 月 ${item.day} 日</span><strong>${escapeHTML(item.event.title)}</strong></button>`).join("") : `<div class="mini-card"><small>本月没有节日提醒</small></div>`;
+      $$("#holidayList .mini-card[data-id]").forEach(el => el.addEventListener("click", () => openDetail(el.dataset.id)));
+    }
+
+    function miniCard(e) {
+      return `<button class="mini-card" data-id="${e.id}"><span class="tag"><i class="dot" style="background:${categoryColor[e.category]}"></i>${escapeHTML(e.category)} · ${scheduleLabel(e)}</span><strong>${titleHTML(e)}</strong></button>`;
+    }
+
+    function scheduleCard(e, monthStart, monthEnd) {
+      return `<div class="schedule-entry" data-id="${escapeHTML(e.id)}">
+        <span class="tag"><i class="dot" style="background:${categoryColor[e.category]}"></i>${escapeHTML(e.category)} · ${scheduleLabel(e)}</span>
+        <button class="schedule-title" type="button" data-open-detail="${escapeHTML(e.id)}">${titleHTML(e)}</button>
+        <div class="schedule-controls">
+          <input type="date" min="${monthStart}" max="${monthEnd}" aria-label="为${escapeHTML(e.title)}选择日期">
+          <button class="btn tiny primary" type="button" data-commit-schedule="${escapeHTML(e.id)}">保存入库</button>
+          <div class="schedule-actions"><button class="btn tiny" type="button" data-edit-event="${escapeHTML(e.id)}">编辑内容</button></div>
+        </div>
+      </div>`;
+    }
+
+    function commitSchedule(id, date) {
+      const item = events.find(event => event.id === id);
+      if (!item) return;
+      if (!date) { showToast("请先选择排期日期"); return; }
+      item.date = date;
+      item.month = date.slice(0, 7);
+      item.stage = "dated";
+      item.scheduleKind = item.scheduleKind || "variable";
+      item.status = "已排期 · 已入库";
+      saveEvents();
+      const scheduled = new Date(`${date}T12:00:00`);
+      cursor = new Date(scheduled.getFullYear(), scheduled.getMonth(), 1);
+      renderAll();
+      showToast("排期已保存并写入活动库");
+    }
+
+    function renderBoard() {
+      $("#board").innerHTML = Object.entries(stageMeta).map(([stage, meta]) => {
+        const list = filtered().filter(e => e.stage === stage);
+        return `<section class="board-column">
+          <div class="board-head"><div><h3>${meta.title}</h3><small class="hint">${meta.note}</small></div><span class="count">${list.length}</span></div>
+          <div class="board-list">${list.length ? list.map(boardCard).join("") : `<div class="mini-card"><small>当前筛选下暂无项目</small></div>`}</div>
+        </section>`;
+      }).join("");
+      $$(".board-card").forEach(el => el.addEventListener("click", () => openDetail(el.dataset.id)));
+    }
+
+    function boardCard(e) {
+      const when = zhWhen(e);
+      return `<button class="board-card" data-id="${e.id}" data-schedule="${scheduleKind(e)}">
+        <span class="tag"><i class="dot" style="background:${categoryColor[e.category]}"></i>${escapeHTML(e.category)} · ${scheduleLabel(e)}</span>
+        <h4>${titleHTML(e)}</h4>
+        <p>${escapeHTML(e.description || "待补充活动说明")}</p>
+        <span class="board-meta"><b>${escapeHTML(when)}</b><span>${escapeHTML(e.status || "待更新")} →</span></span>
+      </button>`;
+    }
+
+    function openDetail(id, occurrenceDate = null, preserveOpen = false) {
+      const e = events.find(item => item.id === id); if (!e) return;
+      activeDetail = { id, occurrenceDate };
+      const when = zhWhen(e);
+      const planClaims = e.id === "weekly-sunday-relaxation" && occurrenceDate ? claimsFor(occurrenceDate) : [];
+      const mine = planClaims.some(claim => claim.mine || claim.participantId === actorId());
+      const claimPanel = e.id === "weekly-sunday-relaxation" && occurrenceDate ? `
+        <section class="claim-panel">
+          <h3>${escapeHTML(zhDate(occurrenceDate))} · 放松计划认领</h3>
+          <p>可多人共同认领；你也可以继续认领其他周日的计划。</p>
+          <div class="claim-list">${planClaims.length ? planClaims.map(claim => `<span class="claim-chip">${escapeHTML(claim.nickname)}${claim.mine || claim.participantId === actorId() ? " · 我" : ""}</span>`).join("") : `<span class="claim-empty">还没有同学认领，欢迎成为第一位。</span>`}</div>
+          <div class="claim-actions">
+            <input id="claimNickname" maxlength="24" value="${escapeHTML(localStorage.getItem(NICKNAME_KEY) || "")}" placeholder="填写你的昵称" aria-label="认领昵称">
+            <button class="btn ${mine ? "" : "primary"}" id="claimRelaxation" type="button">${mine ? "取消认领" : "我要认领"}</button>
+          </div>
+        </section>` : "";
+      $("#detailBody").innerHTML = `
+        <div class="dialog-head">
+          <div><div class="detail-tag"><span class="dot" style="background:${categoryColor[e.category]}"></span>${escapeHTML(e.category)} · ${scheduleLabel(e)}</div><h2>${titleHTML(e)}</h2></div>
+          <button class="close" type="button" data-close="detailDialog" aria-label="关闭">×</button>
+        </div>
+        <p class="detail-copy">${escapeHTML(e.description || "待补充活动说明")}</p>
+        <div class="detail-grid">
+          <div class="detail-item"><small>时间</small><strong>${escapeHTML(when)}</strong></div>
+          <div class="detail-item"><small>推进状态</small><strong>${escapeHTML(e.status || stageMeta[e.stage]?.title || "待更新")}</strong></div>
+          <div class="detail-item"><small>地点</small><strong>${escapeHTML(e.location || "待定")}</strong></div>
+          <div class="detail-item"><small>排期属性</small><strong>${scheduleLabel(e)}</strong></div>
+        </div>
+        ${e.notes?.length ? `<h3>筹备提示</h3><ul class="notes">${e.notes.map(n => `<li>${escapeHTML(n)}</li>`).join("")}</ul>` : ""}
+        ${claimPanel}
+        <div class="form-actions">${e.stage !== "reminder" && e.stage !== "recurring" ? `<button class="btn accent" type="button" data-edit-event="${escapeHTML(e.id)}">编辑 / 修改排期</button>` : ""}<button class="btn" type="button" data-close="detailDialog">关闭</button></div>`;
+      bindCloseButtons();
+      $("#detailBody [data-edit-event]")?.addEventListener("click", () => { $("#detailDialog").close(); openEventEditor(e.id); });
+      $("#claimRelaxation")?.addEventListener("click", () => toggleRelaxationClaim(occurrenceDate));
+      if (!preserveOpen && !$("#detailDialog").open) $("#detailDialog").showModal();
+    }
+
+    async function toggleRelaxationClaim(planKey) {
+      const input = $("#claimNickname");
+      const nickname = input?.value.trim() || "";
+      if (!nickname) { showToast("请先填写昵称"); input?.focus(); return; }
+      localStorage.setItem(NICKNAME_KEY, nickname);
+      const participantId = actorId();
+      const current = claimsFor(planKey);
+      const existing = current.find(claim => claim.mine || claim.participantId === participantId);
+      const button = $("#claimRelaxation");
+      if (button) button.disabled = true;
+      if (sharedDataOnline) {
+        try {
+          const response = await fetch(`${SHARED_API_ORIGIN}/api/relaxation-claims/${encodeURIComponent(planKey)}`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ participantId, nickname })
+          });
+          if (!response.ok) throw new Error("claim failed");
+          const result = await response.json();
+          relaxationClaims = relaxationClaims.filter(claim => claim.planKey !== planKey).concat((result.claims || []).map(claim => ({ ...claim, planKey })));
+          renderCalendar();
+          openDetail("weekly-sunday-relaxation", planKey, true);
+          showToast(result.claimed ? "认领成功，欢迎一起完善计划" : "已取消本期认领");
+          return;
+        } catch (_) {
+          sharedDataOnline = false;
+          setWishSyncState(false);
+        }
+      }
+      if (existing) {
+        relaxationClaims = relaxationClaims.filter(claim => !(claim.planKey === planKey && (claim.mine || claim.participantId === participantId)));
+      } else {
+        relaxationClaims.push({ planKey, participantId, nickname, mine: true, createdAt: new Date().toISOString() });
+      }
+      saveClaims();
+      renderCalendar();
+      openDetail("weekly-sunday-relaxation", planKey, true);
+      showToast(existing ? "已在本机取消认领" : "已在本机记录认领");
+    }
+
+    function renderAll() { renderMetrics(); renderWishes(); renderFilters(); renderCandidates(); renderCalendar(); renderBoard(); }
+
+    function bindCloseButtons() {
+      $$('[data-close]').forEach(btn => btn.onclick = () => document.getElementById(btn.dataset.close).close());
+    }
+
+    function download(name, type, content) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = name; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function exportICS() {
+      const dated = events.filter(e => e.date);
+      const annual = events.filter(e => e.annual);
+      const variableHolidays = events.filter(e => e.category === "节日" && !e.annual);
+      const variableOccurrences = [];
+      const exportYear = cursor.getFullYear();
+      for (let date = new Date(exportYear, 0, 1, 12); date.getFullYear() === exportYear; date.setDate(date.getDate() + 1)) {
+        variableHolidays.forEach(event => { if (holidayOccursOn(event, date)) variableOccurrences.push({ event, date: new Date(date) }); });
+      }
+      const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Class Experience//Activity Calendar//ZH-CN", "CALSCALE:GREGORIAN"];
+      const safe = value => String(value || "").replace(/([,;\\])/g, "\\$1").replace(/\n/g, "\\n");
+      dated.forEach(e => {
+        const compact = e.date.replaceAll("-", "");
+        const end = new Date(`${e.endDate || e.date}T12:00:00`); end.setDate(end.getDate() + 1);
+        const endCompact = `${end.getFullYear()}${String(end.getMonth()+1).padStart(2,"0")}${String(end.getDate()).padStart(2,"0")}`;
+        lines.push("BEGIN:VEVENT", `UID:${e.id}@class-experience`, `DTSTART;VALUE=DATE:${compact}`, `DTEND;VALUE=DATE:${endCompact}`, `SUMMARY:${safe(plainTitle(e))}`, `DESCRIPTION:${safe(e.description)}`, `LOCATION:${safe(e.location)}`, "END:VEVENT");
+      });
+      annual.forEach(e => {
+        const start = new Date(cursor.getFullYear(), e.annual.month - 1, e.annual.day, 12);
+        const end = new Date(start); end.setDate(end.getDate() + 1);
+        const compact = `${start.getFullYear()}${String(start.getMonth()+1).padStart(2,"0")}${String(start.getDate()).padStart(2,"0")}`;
+        const endCompact = `${end.getFullYear()}${String(end.getMonth()+1).padStart(2,"0")}${String(end.getDate()).padStart(2,"0")}`;
+        lines.push("BEGIN:VEVENT", `UID:${e.id}@class-experience`, `DTSTART;VALUE=DATE:${compact}`, `DTEND;VALUE=DATE:${endCompact}`, "RRULE:FREQ=YEARLY", `SUMMARY:${safe(e.title)}`, `DESCRIPTION:${safe(e.description)}`, "END:VEVENT");
+      });
+      variableOccurrences.forEach(({ event, date }) => {
+        const end = new Date(date); end.setDate(end.getDate() + 1);
+        const compact = `${date.getFullYear()}${String(date.getMonth()+1).padStart(2,"0")}${String(date.getDate()).padStart(2,"0")}`;
+        const endCompact = `${end.getFullYear()}${String(end.getMonth()+1).padStart(2,"0")}${String(end.getDate()).padStart(2,"0")}`;
+        lines.push("BEGIN:VEVENT", `UID:${event.id}-${exportYear}@class-experience`, `DTSTART;VALUE=DATE:${compact}`, `DTEND;VALUE=DATE:${endCompact}`, `SUMMARY:${safe(event.title)}`, `DESCRIPTION:${safe(event.description)}`, "END:VEVENT");
+      });
+      lines.push("END:VCALENDAR");
+      download("班级活动日历.ics", "text/calendar;charset=utf-8", lines.join("\r\n"));
+      showToast(`已导出活动与 ${annual.length + variableOccurrences.length} 个节日提醒`);
+    }
+
+    $$(".tab").forEach(tab => tab.addEventListener("click", () => {
+      $$(".tab").forEach(t => { t.classList.toggle("active", t === tab); t.setAttribute("aria-selected", t === tab ? "true" : "false"); });
+      const calendar = tab.dataset.view === "calendar";
+      $("#calendarView").hidden = !calendar; $("#boardView").hidden = calendar;
+    }));
+    $("#prevMonth").addEventListener("click", () => { cursor = new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1); renderCalendar(); });
+    $("#nextMonth").addEventListener("click", () => { cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1); renderCalendar(); });
+    $("#focusMonth").addEventListener("click", () => { cursor = new Date(2026, 10, 1); renderCalendar(); });
+    $("#textPlanLink").addEventListener("click", event => {
+      event.preventDefault();
+      window.location.href = `activity-plan-text.html?month=${monthKey(cursor)}`;
+    });
+    $("#addEventTop").addEventListener("click", () => openEventEditor(null, { month: monthKey(cursor) }));
+    $("#addMonthEvent").addEventListener("click", () => openEventEditor(null, { month: monthKey(cursor) }));
+    $("#addWish").addEventListener("click", () => { $("#wishForm").reset(); $("#wishDialog").showModal(); });
+    $("#refreshCandidates").addEventListener("click", () => { candidates = loadCandidates(); renderCandidates(); showToast("候选活动已刷新"); });
+    $("#downloadJson").addEventListener("click", () => {
+      const backup = { exportedAt: new Date().toISOString(), events, wishes, relaxationClaims, candidates };
+      download("班级活动日历-完整数据备份.json", "application/json;charset=utf-8", JSON.stringify(backup, null, 2));
+      showToast("活动、许愿池和候选数据已备份");
+    });
+    $("#downloadIcs").addEventListener("click", exportICS);
+    $("#eventForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const date = form.get("date") || null;
+      const month = form.get("month") || (date ? date.slice(0, 7) : null);
+      let stage = form.get("stage"); if (date) stage = "dated"; else if (stage === "dated") stage = "planning";
+      const selectedScheduleKind = form.get("scheduleKind") || "variable";
+      const existingIndex = editingEventId ? events.findIndex(item => item.id === editingEventId) : -1;
+      const previous = existingIndex >= 0 ? events[existingIndex] : null;
+      let endDate = previous?.endDate || null;
+      if (endDate && previous.date && date && previous.date !== date) {
+        const duration = Math.round((new Date(`${endDate}T12:00:00`) - new Date(`${previous.date}T12:00:00`)) / 86400000);
+        const shifted = new Date(`${date}T12:00:00`); shifted.setDate(shifted.getDate() + Math.max(0, duration));
+        endDate = `${shifted.getFullYear()}-${String(shifted.getMonth()+1).padStart(2,"0")}-${String(shifted.getDate()).padStart(2,"0")}`;
+      }
+      if (!date) endDate = null;
+      const record = {
+        ...(previous || {}),
+        id: previous?.id || `custom-${Date.now()}`,
+        title: form.get("title").trim(), date, month,
+        category: form.get("category"), stage,
+        scheduleKind: selectedScheduleKind,
+        cadence: selectedScheduleKind === "fixed" ? "固定活动" : (stage === "recurring" ? "固定节奏" : null),
+        status: stage === "dated" ? (previous?.date ? "排期已更新" : "已排期 · 已入库") : selectedScheduleKind === "fixed" || stage === "recurring" ? "持续进行" : "待协调",
+        scale: previous?.scale || "自定义活动", location: form.get("location").trim() || "待定",
+        description: form.get("description").trim() || "待补充活动说明", notes: previous?.notes || []
+      };
+      if (endDate) record.endDate = endDate; else delete record.endDate;
+      if (existingIndex >= 0) events[existingIndex] = record; else events.push(record);
+      saveEvents(); editingEventId = null; $("#addDialog").close(); renderAll(); showToast(previous ? "活动与排期已更新" : "活动已保存并写入活动库");
+    });
+    $("#wishForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const record = {
+        id: `wish-${Date.now()}`,
+        title: form.get("title").trim(),
+        type: form.get("type") || "自由想法",
+        author: form.get("author").trim() || "匿名同学",
+        time: form.get("time").trim(),
+        location: form.get("location").trim(),
+        content: form.get("content").trim(),
+        createdAt: new Date().toISOString(),
+        voteCount: 0,
+        voted: false
+      };
+      const submit = event.currentTarget.querySelector('button[type="submit"]');
+      submit.disabled = true;
+      if (sharedDataOnline) {
+        try {
+          const response = await fetch(`${SHARED_API_ORIGIN}/api/wishes`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(record)
+          });
+          if (!response.ok) throw new Error("wish submit failed");
+          const result = await response.json();
+          wishes.unshift(result.wish);
+          $("#wishDialog").close();
+          renderWishes();
+          showToast("想法已进入共享清单，大家现在可以投票");
+          submit.disabled = false;
+          return;
+        } catch (_) {
+          sharedDataOnline = false;
+          setWishSyncState(false);
+        }
+      }
+      wishes.unshift(record);
+      saveWishes();
+      $("#wishDialog").close();
+      renderWishes();
+      submit.disabled = false;
+      showToast("共享连接不可用，想法已暂存本机");
+    });
+
+    bindCloseButtons();
+    [$("#detailDialog"), $("#addDialog"), $("#wishDialog")].forEach(dialog => dialog.addEventListener("click", e => { if (e.target === dialog) dialog.close(); }));
+    window.addEventListener("storage", event => {
+      if (event.key === STORAGE_KEY) { events = loadEvents(); renderAll(); }
+      if (event.key === CANDIDATE_KEY) { candidates = loadCandidates(); renderCandidates(); }
+      if (event.key === WISH_KEY) { wishes = loadWishes(); renderWishes(); }
+      if (event.key === CLAIM_KEY) { relaxationClaims = loadClaims(); renderCalendar(); }
+    });
+    window.addEventListener("message", event => {
+      if (event.data?.type !== "FD_CALENDAR_REQUEST" || !event.source) return;
+      event.source.postMessage({ type: "FD_CALENDAR_SNAPSHOT", events, wishes }, "*");
+    });
+    importCandidateFromQuery();
+    renderAll();
+    refreshCommunityData();
+    setInterval(() => refreshCommunityData(), 8000);
+  </script>
+</body>
+</html>

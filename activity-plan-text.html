@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16231f">
+  <title>班级活动计划 · 文字版</title>
+  <style>
+    :root {
+      --ink: #16231f;
+      --muted: #69746f;
+      --paper: #f5f7f4;
+      --card: #fff;
+      --line: #dfe6e1;
+      --mint: #bfe8d7;
+      --mint-soft: #e8f6f0;
+      --mint-deep: #4a9275;
+      --shadow: 0 8px 28px rgba(22,35,31,.055);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: var(--ink); background: radial-gradient(circle at 90% 0, #def2e9 0, transparent 28%), var(--paper); font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+    button, input, textarea { font: inherit; }
+    .shell { width: min(1120px, calc(100% - 36px)); margin: auto; padding: 22px 0 54px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 820; }
+    .mark { display: grid; place-items: center; width: 37px; height: 37px; border-radius: 10px; background: var(--ink); color: var(--mint); font-size: 12px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 9px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); text-decoration: none; font-weight: 760; cursor: pointer; }
+    .btn:hover { border-color: #a9b9b1; }
+    .btn.primary { color: #fff; background: var(--ink); border-color: var(--ink); }
+    .btn.mint { color: #2f7158; background: var(--mint-soft); border-color: var(--mint); }
+    .hero { padding: 44px 0 26px; }
+    .eyebrow { display: inline-flex; margin: 0 0 11px; padding: 6px 9px; border-radius: 7px; background: var(--mint-soft); color: #37745c; font-size: 10px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(38px, 6vw, 64px); line-height: 1.02; letter-spacing: -.055em; }
+    .subtitle { margin: 13px 0 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 18px; align-items: start; }
+    .card { border: 1px solid var(--line); border-radius: 17px; background: var(--card); box-shadow: var(--shadow); }
+    .controls { position: sticky; top: 18px; padding: 19px; }
+    .controls h2 { margin: 0 0 5px; font-size: 18px; }
+    .controls > p { margin: 0 0 18px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .field { display: grid; gap: 7px; margin-bottom: 14px; }
+    label { font-size: 12px; font-weight: 820; }
+    input[type="month"] { width: 100%; padding: 10px 11px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fff; }
+    .switch { display: flex; align-items: center; gap: 9px; padding: 9px 0; color: #4d5a54; font-size: 12px; cursor: pointer; }
+    .switch input { accent-color: var(--mint-deep); }
+    .actions { display: grid; gap: 8px; margin-top: 17px; }
+    .status { margin-top: 14px; padding: 10px; border-radius: 9px; background: #f3f6f4; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .output { overflow: hidden; }
+    .output-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .output-head h2 { margin: 0 0 4px; font-size: 20px; }
+    .output-head p { margin: 0; color: var(--muted); font-size: 11px; }
+    .stats { display: flex; flex-wrap: wrap; gap: 7px; justify-content: flex-end; }
+    .stat { padding: 6px 9px; border-radius: 999px; background: var(--mint-soft); color: #39755e; font-size: 10px; font-weight: 780; }
+    #planText { display: block; width: 100%; min-height: 650px; padding: 24px; border: 0; outline: 0; resize: vertical; color: #26342e; background: #fff; font: 14px/1.9 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "PingFang SC", monospace; white-space: pre-wrap; }
+    .output-foot { display: flex; justify-content: space-between; gap: 16px; padding: 13px 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 1.55; }
+    .toast { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 22px); padding: 11px 15px; border-radius: 999px; color: #fff; background: var(--ink); opacity: 0; pointer-events: none; transition: .2s; font-size: 13px; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .data-frame { position: fixed; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    @media (max-width: 780px) { .layout { grid-template-columns: 1fr; } .controls { position: static; } .actions { grid-template-columns: 1fr 1fr; } .output-head { align-items: flex-start; flex-direction: column; } .stats { justify-content: flex-start; } }
+    @media (max-width: 520px) { .shell { width: min(100% - 22px, 1120px); } .brand span:last-child { display: none; } h1 { font-size: 42px; } .actions { grid-template-columns: 1fr; } #planText { min-height: 520px; padding: 17px; font-size: 12px; } .output-foot { flex-direction: column; } }
+    @media print {
+      body { background: #fff; }
+      .shell { width: 100%; padding: 0; }
+      .topbar, .hero, .controls, .output-head .stats, .output-foot, .toast { display: none !important; }
+      .layout { display: block; }
+      .card { border: 0; box-shadow: none; }
+      .output-head { padding: 0 0 18px; }
+      #planText { min-height: 0; padding: 0; resize: none; overflow: visible; font-size: 12pt; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="mark">FD</span><span>体验运营组 · 文字版计划</span></div>
+      <a class="btn" href="class-activity-calendar.html">返回活动日历 →</a>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">Plain Text Activity Plan</p>
+      <h1>一键整理成<br>可转发的文字计划。</h1>
+      <p class="subtitle">从班级日历读取最新活动，按月份自动归纳；生成后仍可直接修改文字。</p>
+    </section>
+
+    <section class="layout">
+      <aside class="card controls">
+        <h2>生成选项</h2>
+        <p>选择月份和需要包含的内容，页面会自动重新整理。</p>
+        <div class="field"><label for="planMonth">计划月份</label><input id="planMonth" type="month"></div>
+        <label class="switch"><input id="includeFixed" type="checkbox" checked> 包含每周固定活动</label>
+        <label class="switch"><input id="includePending" type="checkbox" checked> 包含待排期活动</label>
+        <label class="switch"><input id="includeHolidays" type="checkbox"> 包含节日提醒</label>
+        <label class="switch"><input id="includeWishes" type="checkbox" checked> 包含许愿池想法</label>
+        <div class="actions">
+          <button class="btn primary" id="generatePlan" type="button">重新生成</button>
+          <button class="btn mint" id="copyPlan" type="button">复制文字</button>
+          <button class="btn" id="downloadPlan" type="button">下载 TXT</button>
+          <button class="btn" id="printPlan" type="button">打印 / PDF</button>
+        </div>
+        <div class="status" id="dataStatus">正在读取班级日历数据……</div>
+      </aside>
+
+      <section class="card output">
+        <div class="output-head">
+          <div><h2 id="outputTitle">活动计划</h2><p>文字区域可继续编辑，不会反向修改原日历。</p></div>
+          <div class="stats" id="stats"></div>
+        </div>
+        <textarea id="planText" aria-label="文字版活动计划" spellcheck="false"></textarea>
+        <div class="output-foot"><span>生成内容来自当前浏览器中的班级活动日历。</span><span>复制后可直接发送到班级群。</span></div>
+      </section>
+    </section>
+  </main>
+
+  <iframe class="data-frame" id="calendarDataFrame" src="class-activity-calendar.html" tabindex="-1" aria-hidden="true"></iframe>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const $ = selector => document.querySelector(selector);
+    let events = [];
+    let wishes = [];
+    let dataReady = false;
+    const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+    const lunarFormatter = new Intl.DateTimeFormat("en-u-ca-chinese", { month: "numeric", day: "numeric" });
+
+    function showToast(message) {
+      const toast = $("#toast"); toast.textContent = message; toast.classList.add("show");
+      clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+    function isoDate(date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`; }
+    function dateFromISO(value) { return new Date(`${value}T12:00:00`); }
+    function displayTitle(event) { return event.teamLabel ? `${event.title} · ${event.teamLabel}` : event.title; }
+    function shortDate(value, withWeekday = true) {
+      const date = dateFromISO(value);
+      return `${date.getMonth()+1}月${date.getDate()}日${withWeekday ? `（${weekdays[date.getDay()]}）` : ""}`;
+    }
+    function dateRange(event) {
+      if (!event.endDate || event.endDate === event.date) return shortDate(event.date);
+      return `${shortDate(event.date)}—${shortDate(event.endDate)}`;
+    }
+    function lunarParts(date) {
+      const parts = lunarFormatter.formatToParts(date);
+      const monthText = parts.find(part => part.type === "month")?.value || "";
+      const dayText = parts.find(part => part.type === "day")?.value || "";
+      return { month: Number.parseInt(monthText, 10), day: Number.parseInt(dayText, 10), leap: /bis|闰/i.test(monthText) };
+    }
+    function holidayOccursOn(event, date) {
+      if (event.annual) return date.getMonth()+1 === event.annual.month && date.getDate() === event.annual.day;
+      if (event.floating) return date.getMonth()+1 === event.floating.month && date.getDay() === event.floating.weekday && Math.floor((date.getDate()-1)/7)+1 === event.floating.ordinal;
+      if (event.calculated === "qingming") {
+        const year = date.getFullYear() % 100;
+        return date.getMonth() === 3 && date.getDate() === Math.floor(year * .2422 + 4.81) - Math.floor(year / 4);
+      }
+      if (event.lunar) {
+        const lunar = lunarParts(date);
+        return !lunar.leap && lunar.month === event.lunar.month && lunar.day === event.lunar.day;
+      }
+      if (event.lunarEve) {
+        const tomorrow = new Date(date); tomorrow.setDate(tomorrow.getDate()+1);
+        const lunar = lunarParts(tomorrow);
+        return !lunar.leap && lunar.month === 1 && lunar.day === 1;
+      }
+      return false;
+    }
+    function recurringWhen(event) {
+      if (event.recurrence?.days?.length) {
+        const dayText = event.recurrence.days.map(day => weekdays[day]).join(" / ");
+        return `每${dayText.replaceAll("周", "周")}${event.recurrence.time ? ` · ${event.recurrence.time}` : ""}${event.recurrence.oneOf ? " · 周末择一" : ""}`;
+      }
+      return event.cadence || "时间待定";
+    }
+    function numbered(items, formatter) {
+      if (!items.length) return "暂无";
+      return items.map((item, index) => `${index + 1}. ${formatter(item)}`).join("\n\n");
+    }
+    function detailLines(event) {
+      const lines = [];
+      if (event.location && event.location !== "—") lines.push(`   地点：${event.location}`);
+      if (event.description) lines.push(`   内容：${event.description}`);
+      if (event.status) lines.push(`   状态：${event.status}`);
+      return lines.length ? `\n${lines.join("\n")}` : "";
+    }
+    function generatePlan() {
+      const monthKey = $("#planMonth").value;
+      if (!monthKey || !dataReady) return;
+      const [year, month] = monthKey.split("-").map(Number);
+      const monthStart = `${monthKey}-01`;
+      const monthEnd = `${monthKey}-${String(new Date(year, month, 0).getDate()).padStart(2,"0")}`;
+      const dated = events.filter(event => event.date && event.date <= monthEnd && (event.endDate || event.date) >= monthStart && event.category !== "节日").sort((a,b) => a.date.localeCompare(b.date));
+      const fixed = $("#includeFixed").checked ? events.filter(event => event.stage === "recurring") : [];
+      const pending = $("#includePending").checked ? events.filter(event => !event.date && event.stage === "planning" && (!event.month || event.month === monthKey)) : [];
+      const holidayOccurrences = [];
+      if ($("#includeHolidays").checked) {
+        const holidays = events.filter(event => event.category === "节日");
+        for (let day = 1; day <= new Date(year, month, 0).getDate(); day++) {
+          const date = new Date(year, month-1, day, 12);
+          holidays.forEach(event => { if (holidayOccursOn(event, date)) holidayOccurrences.push({ event, date: isoDate(date) }); });
+        }
+      }
+      const includeWishes = $("#includeWishes").checked;
+      const sections = [];
+      const numerals = ["一", "二", "三", "四", "五", "六"];
+      let sectionIndex = 0;
+      sections.push(`【${year}年${month}月班级活动计划】`);
+      sections.push(`${numerals[sectionIndex++]}、本月已定活动\n\n${numbered(dated, event => `${dateRange(event)}  ${displayTitle(event)}${detailLines(event)}`)}`);
+      if ($("#includeFixed").checked) sections.push(`${numerals[sectionIndex++]}、固定活动安排\n\n${numbered(fixed, event => `${recurringWhen(event)}  ${displayTitle(event)}${detailLines(event)}`)}`);
+      if ($("#includePending").checked) sections.push(`${numerals[sectionIndex++]}、待协调与待排期\n\n${numbered(pending, event => `${displayTitle(event)}${event.month ? `（计划 ${Number(event.month.slice(5))} 月）` : "（日期待定）"}${detailLines(event)}`)}`);
+      if ($("#includeHolidays").checked) sections.push(`${numerals[sectionIndex++]}、节日提醒\n\n${numbered(holidayOccurrences, item => `${shortDate(item.date)}  ${item.event.title}`)}`);
+      if (includeWishes) {
+        sections.push(`${numerals[sectionIndex++]}、许愿池想法\n\n${numbered(wishes, wish => `${wish.title}｜${wish.type || "自由想法"}\n   想法：${wish.content}${wish.time ? `\n   希望时间：${wish.time}` : ""}${wish.location ? `\n   希望地点：${wish.location}` : ""}\n   提议人：${wish.author || "匿名同学"}`)}`);
+      }
+      sections.push(`备注：活动时间、地点及报名方式以班级群最终通知为准。`);
+      $("#planText").value = sections.join("\n\n────────────────────\n\n");
+      $("#outputTitle").textContent = `${year} 年 ${month} 月活动计划`;
+      $("#stats").innerHTML = `<span class="stat">${dated.length} 个已定活动</span><span class="stat">${fixed.length} 项固定计划</span><span class="stat">${pending.length} 个待排期</span>${includeWishes ? `<span class="stat">${wishes.length} 个许愿</span>` : ""}`;
+    }
+    function requestCalendarData() {
+      $("#calendarDataFrame").contentWindow?.postMessage({ type: "FD_CALENDAR_REQUEST" }, "*");
+    }
+    function safeFileMonth() { return $("#planMonth").value || "活动计划"; }
+
+    window.addEventListener("message", event => {
+      if (event.data?.type !== "FD_CALENDAR_SNAPSHOT") return;
+      events = Array.isArray(event.data.events) ? event.data.events : [];
+      wishes = Array.isArray(event.data.wishes) ? event.data.wishes : [];
+      dataReady = true;
+      $("#dataStatus").textContent = `已读取 ${events.length} 项活动和 ${wishes.length} 个许愿；修改主页数据后刷新本页即可更新。`;
+      generatePlan();
+    });
+    $("#calendarDataFrame").addEventListener("load", requestCalendarData);
+    $("#generatePlan").addEventListener("click", () => { generatePlan(); showToast("文字计划已重新生成"); });
+    [$("#planMonth"), $("#includeFixed"), $("#includePending"), $("#includeHolidays"), $("#includeWishes")].forEach(control => control.addEventListener("change", generatePlan));
+    $("#copyPlan").addEventListener("click", async () => {
+      const text = $("#planText").value;
+      try { await navigator.clipboard.writeText(text); }
+      catch (_) { $("#planText").focus(); $("#planText").select(); document.execCommand("copy"); }
+      showToast("文字计划已复制");
+    });
+    $("#downloadPlan").addEventListener("click", () => {
+      const blob = new Blob([$("#planText").value], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a"); link.href = url; link.download = `${safeFileMonth()}-班级活动计划.txt`; link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000); showToast("TXT 文件已下载");
+    });
+    $("#printPlan").addEventListener("click", () => window.print());
+
+    const params = new URLSearchParams(window.location.search);
+    $("#planMonth").value = params.get("month") || "2026-11";
+    setTimeout(() => { if (!dataReady) requestCalendarData(); }, 500);
+  </script>
+</body>
+</html>
