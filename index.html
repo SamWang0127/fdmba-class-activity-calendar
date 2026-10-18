@@ -82,6 +82,10 @@
     .poll-deadline span { display: block; margin-top: 6px; color: #39755f; font-size: 11px; font-weight: 780; }
     .poll-rules { display: flex; gap: 8px 18px; flex-wrap: wrap; margin: 0 0 18px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,.78); color: #53615a; font-size: 11px; line-height: 1.5; }
     .poll-rules span::before { content: "✓"; margin-right: 6px; color: var(--mint-deep); font-weight: 900; }
+    .poll-disclosure { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin: -6px 0 18px; padding: 12px 14px; border: 1px solid #f0d4ce; border-radius: 12px; background: #fff8f6; color: #745950; font-size: 10px; line-height: 1.6; }
+    .poll-disclosure strong { color: #8f4d40; }
+    .poll-disclosure a { flex: 0 0 auto; color: #39755f; font-weight: 850; text-decoration: none; }
+    .poll-column-link { display: inline-flex; margin-top: 9px; color: #39755f; font-size: 10px; font-weight: 850; text-decoration: none; }
     .poll-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
     .poll-option { --option-accent: var(--mint-deep); position: relative; display: flex; flex-direction: column; min-width: 0; padding: 18px; border: 1px solid var(--line); border-top: 4px solid var(--option-accent); border-radius: 16px; background: #fff; transition: .18s ease; }
     .poll-option[data-option="country-leisure"] { --option-accent: #789e59; }
@@ -330,10 +334,12 @@
       .top-actions .btn:not(.primary) { display: none; }
       .top-actions .btn.text-plan-link { display: inline-flex; }
       .top-actions .btn.poll-jump { display: inline-flex; }
+      .top-actions .btn.vote-column-link { display: inline-flex; }
       h1 { font-size: 40px; }
       .jujin-poll { padding: 18px 14px; border-radius: 18px; }
       .poll-head { grid-template-columns: 1fr; gap: 12px; }
       .poll-deadline { min-width: 0; }
+      .poll-disclosure { flex-direction: column; gap: 8px; }
       .poll-form { grid-template-columns: 1fr; }
       .poll-field.comment, .poll-submit-bar { grid-column: auto; }
       .poll-submit-bar { align-items: stretch; flex-direction: column; }
@@ -382,6 +388,7 @@
         <button class="btn small" id="downloadJson">备份数据</button>
         <button class="btn small" id="downloadIcs">导出日历</button>
         <a class="btn small accent poll-jump" href="#jujinPoll">聚劲周投票</a>
+        <a class="btn small accent vote-column-link" href="jujin-vote-column.html">投票专栏</a>
         <a class="btn small accent text-plan-link" id="textPlanLink" href="activity-plan-text.html">文字版计划</a>
         <button class="btn primary" id="addEventTop">＋ 添加活动</button>
       </div>
@@ -403,14 +410,19 @@
         <div class="poll-deadline">
           <small>投票截止</small>
           <strong>10月25日 周日 24:00</strong>
-          <span><b id="jujinTotalVotes">0</b> 人已投票 · <span id="jujinPollState">连接中</span></span>
+          <span><b id="jujinTotalVotes">0</b> 份当前记录 · <span id="jujinPollState">连接中</span></span>
+          <a class="poll-column-link" href="jujin-vote-column.html">查看全部投票记录 →</a>
         </div>
       </div>
       <div class="poll-rules" aria-label="投票规则">
         <span>每个浏览器设备记录一份选择</span>
         <span>截止前可以修改</span>
         <span>最高票方案优先进入执行确认</span>
-        <span>预算按约40人估算，以最终报价为准</span>
+        <span>费用按55人规模测算，以最终报价为准</span>
+      </div>
+      <div class="poll-disclosure">
+        <span><strong>公开说明：</strong>提交后，微信昵称、主选与备选方案、参加意愿、预算、留言及更新时间会展示在公开投票专栏，互联网访问者均可查看。请勿填写手机号、住址等敏感信息，公开页面不会展示设备标识。</span>
+        <a href="jujin-vote-column.html">打开投票专栏</a>
       </div>
 
       <form id="jujinPollForm">
@@ -420,9 +432,9 @@
             <h3>城市定向探索</h3>
             <p class="poll-option-sub">上海市区或乌镇 · 约1.5天 · 互动强度高</p>
             <div class="poll-budget">
-              <small>参考预算</small>
-              <strong>上海 280至830元/人<br>乌镇 730至1200元/人</strong>
-              <em>预算随住宿和晚宴标准变化</em>
+              <small>55人参考总预算</small>
+              <strong>上海 14,300至44,000元<br>乌镇 38,500至63,250元</strong>
+              <em>文件口径：上海260至800元/人，乌镇700至1150元/人</em>
             </div>
             <h4 class="poll-section-title">主要体验</h4>
             <p class="poll-summary">分组完成城市打卡与任务挑战，可加入NPC、随机惊喜卡片和“上海之最”等玩法，晚间统一聚餐、颁奖和抽奖。</p>
@@ -450,9 +462,9 @@
             <h3>郊野休闲日</h3>
             <p class="poll-option-sub">上海近郊 · 当天往返 · 轻松自由、可带宠物</p>
             <div class="poll-budget">
-              <small>参考预算</small>
-              <strong>310至560元/人</strong>
-              <em>三套方案中预算相对较低</em>
+              <small>55人参考总预算</small>
+              <strong>15,400至28,050元</strong>
+              <em>文件口径：280至510元/人，三套方案中预算相对较低</em>
             </div>
             <h4 class="poll-section-title">主要体验</h4>
             <p class="poll-summary">钓鱼、划船、烧烤、厨神大赛、飞盘、桌游和自由休闲，可根据场地政策设置宠物友好区域。</p>
@@ -480,9 +492,9 @@
             <h3>泡汤养生局</h3>
             <p class="poll-option-sub">水裹或曲水兰亭 · 室内活动 · 约1至1.5天</p>
             <div class="poll-budget">
-              <small>参考预算</small>
-              <strong>水裹 320至550元/人<br>曲水兰亭 700至1100元/人</strong>
-              <em>水裹价格不含住宿，曲水兰亭按住宿套餐参考</em>
+              <small>55人参考总预算</small>
+              <strong>水裹 16,500至29,150元<br>曲水兰亭 31,350至55,000元</strong>
+              <em>文件口径：水裹300至530元/人（不含可选住宿），曲水兰亭570至1000元/人</em>
             </div>
             <h4 class="poll-section-title">主要体验</h4>
             <p class="poll-summary">泡汤、汗蒸、休息和聚餐，可搭配桌游、麻将、夜宵及自由交流，并根据方案选择是否留宿。</p>
@@ -507,7 +519,7 @@
         </div>
 
         <div class="poll-form">
-          <div class="poll-field"><label for="pollNickname">微信昵称 *</label><input id="pollNickname" name="nickname" maxlength="24" required placeholder="用于识别和核对投票"></div>
+          <div class="poll-field"><label for="pollNickname">微信昵称 *</label><input id="pollNickname" name="nickname" maxlength="24" required placeholder="将公开显示在投票专栏"></div>
           <div class="poll-field"><label for="pollBackupOption">备选方案（选填）</label><select id="pollBackupOption" name="backupOptionId"><option value="">不选备选</option><option value="city-orienteering">城市定向探索</option><option value="country-leisure">郊野休闲日</option><option value="spa-retreat">泡汤养生局</option></select></div>
           <div class="poll-field"><label for="pollAttendance">参加意愿</label><select id="pollAttendance" name="attendanceIntent"><option value="">暂不填写</option><option>确定参加</option><option>大概率参加</option><option>暂不确定</option><option>无法参加</option></select></div>
           <div class="poll-field"><label for="pollBudget">可接受人均预算</label><select id="pollBudget" name="budgetRange"><option value="">暂不填写</option><option>400元以内</option><option>401至700元</option><option>701至1100元</option><option>视体验而定</option></select></div>
@@ -621,7 +633,7 @@
 
     <footer>
       <div><strong>数据边界：</strong>班级活动依据原始文档及后续补充录入；常用公历、农历和浮动节日根据日期规则自动提醒，生日活动仍未录入。</div>
-      <div>聚劲周方案投票、许愿支持和周日晚认领为班级共享实时数据；个人新增排期与候选活动仍保存在本浏览器。可随时下载 JSON 备份或导出 .ics 日历。</div>
+      <div>聚劲周方案投票、许愿支持和周日晚认领为班级共享实时数据；投票昵称与完整选择会公开展示在投票专栏。个人新增排期与候选活动仍保存在本浏览器。</div>
     </footer>
   </main>
 
@@ -672,7 +684,7 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script>
-      const SHARED_API_ORIGIN = "https://fdmba-2026-class-activity-hub.sure-hill-0440.chatgpt.site";
+    const SHARED_API_ORIGIN = "https://fdmba-2026-class-activity-hub.sure-hill-0440.chatgpt.site";
     const JUJIN_OPTIONS = {
       "city-orienteering": "城市定向探索",
       "country-leisure": "郊野休闲日",
@@ -1191,7 +1203,7 @@
 
       $("#jujinPollSubmit").textContent = jujinPoll.currentVote ? "更新投票" : "提交投票";
       if (!jujinPoll.isOpen) setPollStatus("投票已截止，结果仍可查看");
-      else if (jujinPollOnline) setPollStatus(jujinPoll.currentVote ? "你的选择已保存，可在截止前修改" : "共享投票已连接，提交后全班实时可见");
+      else if (jujinPollOnline) setPollStatus(jujinPoll.currentVote ? "你的选择已保存，可在截止前修改；记录会公开展示" : "共享投票已连接，提交后会公开展示在投票专栏");
       updatePollSelectionUI();
     }
 

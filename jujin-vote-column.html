@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16231f">
+  <title>聚劲周投票专栏</title>
+  <style>
+    :root {
+      --ink: #16231f;
+      --muted: #69746e;
+      --paper: #f5f7f4;
+      --card: #ffffff;
+      --line: #dfe6e1;
+      --mint: #bfe8d7;
+      --mint-deep: #4f9b7d;
+      --mint-soft: #e8f6f0;
+      --coral-soft: #fff2ef;
+      --coral: #bb6757;
+      --country: #789e59;
+      --spa: #8a78b3;
+      --shadow: 0 8px 28px rgba(22, 35, 31, .06);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif; }
+    button, input { font: inherit; }
+    .shell { width: min(1160px, calc(100% - 36px)); margin: 0 auto; padding: 22px 0 52px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; }
+    .mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--ink); color: var(--mint); font-size: 13px; }
+    .actions { display: flex; gap: 9px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 8px 13px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); font-size: 12px; font-weight: 760; text-decoration: none; cursor: pointer; }
+    .btn:hover { border-color: #aab7b0; }
+    .btn.primary { border-color: var(--ink); background: var(--ink); color: #fff; }
+    .btn:disabled { opacity: .55; cursor: wait; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; padding: 48px 0 24px; }
+    .eyebrow { margin: 0 0 10px; color: #39755f; font-size: 10px; font-weight: 850; letter-spacing: .14em; }
+    h1 { margin: 0; font-size: clamp(38px, 6vw, 66px); line-height: 1; letter-spacing: -.055em; }
+    .intro { max-width: 720px; margin: 14px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .sync { min-width: 210px; padding: 14px 16px; border: 1px solid #cae2d7; border-radius: 14px; background: var(--mint-soft); }
+    .sync small { display: block; margin-bottom: 5px; color: var(--muted); font-size: 10px; }
+    .sync strong { display: block; font-size: 14px; }
+    .sync.error { border-color: #efcec7; background: var(--coral-soft); color: var(--coral); }
+    .notice { display: flex; gap: 10px; margin-bottom: 18px; padding: 13px 15px; border: 1px solid #efd5cf; border-radius: 13px; background: #fff9f7; color: #735c54; font-size: 11px; line-height: 1.6; }
+    .notice b { color: #914f43; }
+    .results { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+    .result { padding: 17px; border: 1px solid var(--line); border-radius: 15px; background: #fff; box-shadow: var(--shadow); }
+    .result small { display: block; min-height: 16px; margin-bottom: 12px; color: var(--muted); font-size: 10px; }
+    .result strong { display: block; font-size: 28px; letter-spacing: -.04em; }
+    .result span { display: block; margin-top: 7px; color: var(--muted); font-size: 10px; }
+    .bar { height: 6px; margin-top: 11px; overflow: hidden; border-radius: 999px; background: #e9eeeb; }
+    .bar i { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--mint-deep); transition: width .25s ease; }
+    [data-result="country-leisure"] .bar i { background: var(--country); }
+    [data-result="spa-retreat"] .bar i { background: var(--spa); }
+    .budget-note { margin-bottom: 22px; padding: 14px 16px; border: 1px solid #cfe4da; border-radius: 13px; background: var(--mint-soft); color: #456658; font-size: 11px; line-height: 1.65; }
+    .budget-note strong { color: var(--ink); }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 0 13px; }
+    .toolbar h2 { margin: 0; font-size: 22px; letter-spacing: -.035em; }
+    .toolbar p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 7px; }
+    .filter { min-height: 34px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 9px; background: #fff; color: var(--muted); font-size: 11px; font-weight: 760; cursor: pointer; }
+    .filter.active { border-color: var(--mint-deep); background: var(--mint-soft); color: #2f6d56; }
+    .records { display: grid; gap: 10px; }
+    .record { display: grid; grid-template-columns: minmax(150px, .75fr) minmax(260px, 1.4fr) minmax(200px, 1fr); gap: 16px; align-items: start; padding: 17px; border: 1px solid var(--line); border-radius: 15px; background: #fff; box-shadow: 0 4px 16px rgba(22,35,31,.035); }
+    .record-head { min-width: 0; }
+    .record-head strong { display: block; overflow: hidden; margin-bottom: 6px; font-size: 16px; text-overflow: ellipsis; white-space: nowrap; }
+    .record-head time { color: var(--muted); font-size: 9px; }
+    .choices { display: grid; gap: 8px; }
+    .choice { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+    .choice small { flex: 0 0 46px; color: var(--muted); font-size: 9px; }
+    .tag { display: inline-flex; align-items: center; max-width: 100%; padding: 5px 8px; border-radius: 999px; background: var(--mint-soft); color: #2f6d56; font-size: 10px; font-weight: 820; }
+    .tag.backup { background: #f1f2f1; color: #5b6660; }
+    .details { display: grid; gap: 7px; }
+    .detail { font-size: 10px; line-height: 1.5; }
+    .detail b { color: var(--muted); font-weight: 650; }
+    .comment { margin: 2px 0 0; padding: 9px 10px; border-left: 3px solid var(--mint); border-radius: 0 8px 8px 0; background: #f7faf8; color: #45534c; font-size: 10px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .empty { display: grid; place-items: center; min-height: 150px; padding: 24px; border: 1px dashed #bcd6ca; border-radius: 15px; background: rgba(255,255,255,.55); color: var(--muted); font-size: 12px; text-align: center; }
+    footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 1.6; }
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+      .sync { min-width: 0; }
+      .results { grid-template-columns: 1fr 1fr; }
+      .record { grid-template-columns: 1fr 1fr; }
+      .record .details { grid-column: 1 / -1; }
+      .toolbar { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 22px, 1160px); padding-top: 14px; }
+      .brand span:last-child { display: none; }
+      .hero { padding-top: 34px; }
+      h1 { font-size: 42px; }
+      .results { grid-template-columns: 1fr; }
+      .record { grid-template-columns: 1fr; }
+      .record .details { grid-column: auto; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="mark">FD</span><span>体验运营组 · CLASS EXPERIENCE</span></div>
+      <div class="actions">
+        <a class="btn" href="class-activity-calendar.html#jujinPoll">返回投票</a>
+        <button class="btn primary" id="refreshButton" type="button">刷新记录</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">JUJIN WEEK · VOTE COLUMN</p>
+        <h1>投票专栏</h1>
+        <p class="intro">这里公开展示聚劲周的当前投票记录与意见，方便全班一起核对偏好和执行条件。每台浏览器设备保留一份当前选择，截止前修改会覆盖原记录。</p>
+      </div>
+      <div class="sync" id="syncBox" role="status" aria-live="polite">
+        <small>共享数据状态</small>
+        <strong id="syncText">正在连接…</strong>
+      </div>
+    </section>
+
+    <div class="notice"><span><b>公开范围：</b>昵称、主选与备选方案、参加意愿、预算、留言和更新时间会展示在本页；设备标识不会公开。本页向互联网公开，请勿在留言中填写手机号、住址等敏感信息。</span></div>
+
+    <section class="results" aria-label="投票概览">
+      <article class="result"><small>当前投票记录</small><strong id="totalVotes">—</strong><span>份设备当前票</span></article>
+      <article class="result" data-result="city-orienteering"><small>城市定向探索</small><strong data-count="city-orienteering">—</strong><span data-share="city-orienteering">连接中</span><div class="bar"><i data-bar="city-orienteering"></i></div></article>
+      <article class="result" data-result="country-leisure"><small>郊野休闲日</small><strong data-count="country-leisure">—</strong><span data-share="country-leisure">连接中</span><div class="bar"><i data-bar="country-leisure"></i></div></article>
+      <article class="result" data-result="spa-retreat"><small>泡汤养生局</small><strong data-count="spa-retreat">—</strong><span data-share="spa-retreat">连接中</span><div class="bar"><i data-bar="spa-retreat"></i></div></article>
+    </section>
+
+    <div class="budget-note"><strong>55人费用口径：</strong>按方案文件中的人均区间换算，城市定向上海约14,300至44,000元、乌镇约38,500至63,250元；郊野休闲约15,400至28,050元；水裹约16,500至29,150元（不含可选住宿）、曲水兰亭约31,350至55,000元。最终以55人正式询价为准。</div>
+
+    <section aria-labelledby="recordsTitle">
+      <div class="toolbar">
+        <div><h2 id="recordsTitle">全部投票记录</h2><p id="recordSummary">正在加载投票记录</p></div>
+        <div class="filters" aria-label="按主选方案筛选">
+          <button class="filter active" data-filter="all" type="button">全部</button>
+          <button class="filter" data-filter="city-orienteering" type="button">城市定向</button>
+          <button class="filter" data-filter="country-leisure" type="button">郊野休闲</button>
+          <button class="filter" data-filter="spa-retreat" type="button">泡汤养生</button>
+        </div>
+      </div>
+      <div class="records" id="records" aria-live="polite"><div class="empty">正在读取共享投票记录…</div></div>
+    </section>
+
+    <footer>
+      <span>投票截止：2026年10月25日 24:00 · 活动时间：2026年11月21日至22日</span>
+      <span>昵称未经过身份认证；同一位同学使用多个设备可能形成多份记录。</span>
+    </footer>
+  </main>
+
+  <script>
+    const SHARED_API_ORIGIN = "https://fdmba-2026-class-activity-hub.sure-hill-0440.chatgpt.site";
+    const OPTIONS = {
+      "city-orienteering": "城市定向探索",
+      "country-leisure": "郊野休闲日",
+      "spa-retreat": "泡汤养生局"
+    };
+    let snapshot = { totalVotes: 0, counts: {}, records: [] };
+    let activeFilter = "all";
+    let refreshing = false;
+
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => [...document.querySelectorAll(selector)];
+    const make = (tag, className = "", text = "") => {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined && text !== null) node.textContent = String(text);
+      return node;
+    };
+    const optionName = id => OPTIONS[id] || "未选择";
+    const fallback = (value, empty = "未填写") => String(value || "").trim() || empty;
+    const formatTime = value => {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "时间未记录";
+      return new Intl.DateTimeFormat("zh-CN", {
+        timeZone: "Asia/Shanghai", month: "numeric", day: "numeric",
+        hour: "2-digit", minute: "2-digit", hour12: false
+      }).format(date);
+    };
+
+    function detailRow(label, value) {
+      const row = make("div", "detail");
+      const heading = make("b", "", `${label}：`);
+      row.append(heading, document.createTextNode(value));
+      return row;
+    }
+
+    function recordCard(record) {
+      const card = make("article", "record");
+      const head = make("div", "record-head");
+      head.append(make("strong", "", fallback(record.nickname, "未署名")), make("time", "", `更新于 ${formatTime(record.updatedAt)}`));
+
+      const choices = make("div", "choices");
+      const primary = make("div", "choice");
+      primary.append(make("small", "", "主选"), make("span", "tag", optionName(record.optionId)));
+      const backup = make("div", "choice");
+      backup.append(make("small", "", "备选"), make("span", "tag backup", record.backupOptionId ? optionName(record.backupOptionId) : "未选择"));
+      choices.append(primary, backup);
+
+      const details = make("div", "details");
+      details.append(
+        detailRow("参加意愿", fallback(record.attendanceIntent)),
+        detailRow("可接受预算", fallback(record.budgetRange))
+      );
+      const comment = make("p", "comment", fallback(record.comment, "未填写补充意见"));
+      details.append(comment);
+      card.append(head, choices, details);
+      return card;
+    }
+
+    function renderResults() {
+      const total = Number(snapshot.totalVotes || 0);
+      $("#totalVotes").textContent = total;
+      Object.keys(OPTIONS).forEach(id => {
+        const count = Number(snapshot.counts?.[id] || 0);
+        const percent = total ? Math.round(count / total * 100) : 0;
+        $(`[data-count="${id}"]`).textContent = `${count}票`;
+        $(`[data-share="${id}"]`).textContent = `${percent}%`;
+        $(`[data-bar="${id}"]`).style.width = `${percent}%`;
+      });
+    }
+
+    function renderRecords() {
+      const root = $("#records");
+      root.textContent = "";
+      const records = (snapshot.records || []).filter(record => activeFilter === "all" || record.optionId === activeFilter);
+      $("#recordSummary").textContent = activeFilter === "all"
+        ? `共 ${snapshot.records?.length || 0} 份公开记录，按更新时间倒序排列`
+        : `${optionName(activeFilter)} · ${records.length} 份记录`;
+      if (!records.length) {
+        root.append(make("div", "empty", activeFilter === "all" ? "还没有公开投票记录。" : "这个方案暂时没有投票记录。"));
+        return;
+      }
+      records.forEach(record => root.append(recordCard(record)));
+    }
+
+    function setSync(message, error = false) {
+      $("#syncText").textContent = message;
+      $("#syncBox").classList.toggle("error", error);
+    }
+
+    async function refreshRecords() {
+      if (refreshing) return;
+      refreshing = true;
+      $("#refreshButton").disabled = true;
+      $("#refreshButton").textContent = "刷新中…";
+      try {
+        const response = await fetch(`${SHARED_API_ORIGIN}/api/jujin-vote?include=records`, { cache: "no-store" });
+        if (!response.ok) throw new Error("records unavailable");
+        snapshot = await response.json();
+        renderResults();
+        renderRecords();
+        setSync(`已同步 · ${new Intl.DateTimeFormat("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(new Date())}`);
+      } catch (_) {
+        setSync("连接失败，请稍后重试", true);
+        const root = $("#records");
+        if (!(snapshot.records || []).length) {
+          root.textContent = "";
+          root.append(make("div", "empty", "暂时无法读取共享投票记录，请稍后点击刷新。"));
+        }
+      } finally {
+        refreshing = false;
+        $("#refreshButton").disabled = false;
+        $("#refreshButton").textContent = "刷新记录";
+      }
+    }
+
+    $$(".filter").forEach(button => button.addEventListener("click", () => {
+      activeFilter = button.dataset.filter || "all";
+      $$(".filter").forEach(item => item.classList.toggle("active", item === button));
+      renderRecords();
+    }));
+    $("#refreshButton").addEventListener("click", refreshRecords);
+    refreshRecords();
+    setInterval(refreshRecords, 15000);
+  </script>
+</body>
+</html>
