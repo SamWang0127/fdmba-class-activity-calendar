@@ -71,6 +71,60 @@
     .metric-value { display: block; font-size: 30px; line-height: 1; font-weight: 820; letter-spacing: -.045em; margin-bottom: 10px; }
     .metric-label { display: block; color: var(--muted); font-size: 13px; line-height: 1.4; }
 
+    .jujin-poll { margin: 0 0 26px; padding: 24px; border: 1px solid #cfe4da; border-radius: 22px; background: linear-gradient(145deg, #ffffff 0%, #edf8f3 100%); box-shadow: var(--shadow); scroll-margin-top: 16px; }
+    .poll-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 22px; align-items: start; margin-bottom: 20px; }
+    .poll-kicker { margin: 0 0 7px; color: #39755f; font-size: 11px; font-weight: 850; letter-spacing: .12em; }
+    .poll-head h2 { margin: 0 0 8px; font-size: clamp(26px, 3.2vw, 38px); line-height: 1.12; letter-spacing: -.04em; }
+    .poll-intro { max-width: 760px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .poll-deadline { min-width: 220px; padding: 14px 16px; border: 1px solid #c8ddd4; border-radius: 14px; background: rgba(255,255,255,.8); }
+    .poll-deadline small { display: block; margin-bottom: 5px; color: var(--muted); font-size: 10px; }
+    .poll-deadline strong { display: block; font-size: 17px; line-height: 1.35; }
+    .poll-deadline span { display: block; margin-top: 6px; color: #39755f; font-size: 11px; font-weight: 780; }
+    .poll-rules { display: flex; gap: 8px 18px; flex-wrap: wrap; margin: 0 0 18px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,.78); color: #53615a; font-size: 11px; line-height: 1.5; }
+    .poll-rules span::before { content: "✓"; margin-right: 6px; color: var(--mint-deep); font-weight: 900; }
+    .poll-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .poll-option { --option-accent: var(--mint-deep); position: relative; display: flex; flex-direction: column; min-width: 0; padding: 18px; border: 1px solid var(--line); border-top: 4px solid var(--option-accent); border-radius: 16px; background: #fff; transition: .18s ease; }
+    .poll-option[data-option="country-leisure"] { --option-accent: #789e59; }
+    .poll-option[data-option="spa-retreat"] { --option-accent: #8a78b3; }
+    .poll-option.selected { border-color: var(--option-accent); box-shadow: 0 0 0 3px rgba(79,155,125,.16); }
+    .poll-option-no { display: block; margin-bottom: 7px; color: var(--option-accent); font-size: 10px; font-weight: 880; letter-spacing: .1em; }
+    .poll-option h3 { margin: 0 0 5px; font-size: 21px; letter-spacing: -.025em; }
+    .poll-option-sub { min-height: 38px; margin: 0 0 13px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .poll-budget { margin-bottom: 13px; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .poll-budget small { display: block; margin-bottom: 4px; color: var(--muted); font-size: 9px; font-weight: 750; }
+    .poll-budget strong { display: block; color: var(--ink); font-size: 14px; line-height: 1.55; }
+    .poll-budget em { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; font-style: normal; line-height: 1.45; }
+    .poll-section-title { margin: 0 0 7px; color: var(--option-accent); font-size: 11px; font-weight: 850; }
+    .poll-summary { margin: 0 0 13px; color: #3f4c46; font-size: 11px; line-height: 1.65; }
+    .poll-schedule { display: grid; gap: 5px; margin: 0 0 13px; }
+    .poll-schedule div { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 7px; font-size: 10px; line-height: 1.45; }
+    .poll-schedule time { color: var(--option-accent); font-weight: 820; }
+    .poll-consider { display: grid; gap: 8px; margin-bottom: 15px; }
+    .poll-consider p { margin: 0; padding-left: 10px; border-left: 2px solid var(--mint); color: #53615a; font-size: 10px; line-height: 1.55; }
+    .poll-consider p:last-child { border-color: var(--coral); }
+    .poll-consider strong { color: var(--ink); }
+    .poll-result { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+    .poll-result-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; color: var(--muted); font-size: 10px; }
+    .poll-result-row b { color: var(--option-accent); font-size: 12px; }
+    .poll-result-bar { height: 7px; overflow: hidden; border-radius: 999px; background: #e9eeeb; }
+    .poll-result-bar i { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--option-accent); transition: width .25s ease; }
+    .poll-choice { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; margin-top: 12px; border: 1px solid #cfe0d8; border-radius: 10px; color: var(--option-accent); font-size: 12px; font-weight: 850; cursor: pointer; }
+    .poll-choice:hover { background: #f1f8f5; }
+    .poll-choice input { width: 16px; height: 16px; margin: 0; padding: 0; accent-color: var(--option-accent); }
+    .poll-form { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 11px; margin-top: 16px; padding-top: 18px; border-top: 1px solid #cfe4da; }
+    .poll-field { display: grid; gap: 6px; }
+    .poll-field.comment { grid-column: 1 / -1; }
+    .poll-field label { font-size: 11px; }
+    .poll-field input, .poll-field select, .poll-field textarea { border-color: #cfe0d8; border-radius: 10px; padding: 10px 11px; font-size: 12px; }
+    .poll-field textarea { min-height: 72px; }
+    .poll-submit-bar { grid-column: 1 / -1; position: sticky; bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 12px; border: 1px solid #bfd9cd; border-radius: 12px; background: rgba(255,255,255,.96); box-shadow: 0 8px 26px rgba(22,35,31,.11); z-index: 4; }
+    .poll-submit-copy { min-width: 0; }
+    .poll-submit-copy strong { display: block; margin-bottom: 2px; font-size: 12px; }
+    .poll-submit-copy span { display: block; color: var(--muted); font-size: 10px; line-height: 1.45; }
+    .poll-submit-bar .btn { flex: 0 0 auto; min-width: 128px; }
+    .poll-submit-bar .btn:disabled { opacity: .5; cursor: wait; }
+    .poll-status.error { color: #b15142; }
+
     .wish-pool { margin: 0 0 26px; padding: 20px; border: 1px solid #d5e7df; border-radius: var(--radius); background: linear-gradient(135deg, #ffffff 0%, #edf8f3 100%); box-shadow: var(--shadow); }
     .wish-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
     .wish-title { display: flex; align-items: flex-start; gap: 12px; }
@@ -260,6 +314,9 @@
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
     @media (max-width: 980px) {
+      .poll-options { grid-template-columns: 1fr; }
+      .poll-option-sub { min-height: 0; }
+      .poll-form { grid-template-columns: 1fr 1fr; }
       .calendar-layout { grid-template-columns: 1fr; }
       .side-stack { grid-template-columns: 1fr 1fr; }
       .board { grid-template-columns: 1fr; }
@@ -272,7 +329,15 @@
       .brand span:last-child { display: none; }
       .top-actions .btn:not(.primary) { display: none; }
       .top-actions .btn.text-plan-link { display: inline-flex; }
+      .top-actions .btn.poll-jump { display: inline-flex; }
       h1 { font-size: 40px; }
+      .jujin-poll { padding: 18px 14px; border-radius: 18px; }
+      .poll-head { grid-template-columns: 1fr; gap: 12px; }
+      .poll-deadline { min-width: 0; }
+      .poll-form { grid-template-columns: 1fr; }
+      .poll-field.comment, .poll-submit-bar { grid-column: auto; }
+      .poll-submit-bar { align-items: stretch; flex-direction: column; }
+      .poll-submit-bar .btn { width: 100%; }
       .metrics { grid-template-columns: 1fr 1fr; }
       .wish-head { flex-direction: column; }
       .wish-list { grid-template-columns: 1fr; }
@@ -316,6 +381,7 @@
       <div class="top-actions">
         <button class="btn small" id="downloadJson">备份数据</button>
         <button class="btn small" id="downloadIcs">导出日历</button>
+        <a class="btn small accent poll-jump" href="#jujinPoll">聚劲周投票</a>
         <a class="btn small accent text-plan-link" id="textPlanLink" href="activity-plan-text.html">文字版计划</a>
         <button class="btn primary" id="addEventTop">＋ 添加活动</button>
       </div>
@@ -325,6 +391,133 @@
       <p class="eyebrow">Class Experience Calendar</p>
       <h1 id="page-title">班级活动日历</h1>
       <p class="hero-subtitle">体验运营组 · 活动排期与筹备进度</p>
+    </section>
+
+    <section class="jujin-poll" id="jujinPoll" aria-labelledby="jujinPollTitle">
+      <div class="poll-head">
+        <div>
+          <p class="poll-kicker">JUJIN WEEK · CLASS VOTE</p>
+          <h2 id="jujinPollTitle">聚劲周团建方案投票</h2>
+          <p class="poll-intro">活动时间为2026年11月21日至22日。请先看完三套方案的预算、行程与注意事项，再选择最希望参加的一项。投票用于确定优先执行方案，不等于正式报名，也不会立即产生费用。</p>
+        </div>
+        <div class="poll-deadline">
+          <small>投票截止</small>
+          <strong>10月25日 周日 24:00</strong>
+          <span><b id="jujinTotalVotes">0</b> 人已投票 · <span id="jujinPollState">连接中</span></span>
+        </div>
+      </div>
+      <div class="poll-rules" aria-label="投票规则">
+        <span>每个浏览器设备记录一份选择</span>
+        <span>截止前可以修改</span>
+        <span>最高票方案优先进入执行确认</span>
+        <span>预算按约40人估算，以最终报价为准</span>
+      </div>
+
+      <form id="jujinPollForm">
+        <div class="poll-options">
+          <article class="poll-option" data-option="city-orienteering">
+            <span class="poll-option-no">方案一</span>
+            <h3>城市定向探索</h3>
+            <p class="poll-option-sub">上海市区或乌镇 · 约1.5天 · 互动强度高</p>
+            <div class="poll-budget">
+              <small>参考预算</small>
+              <strong>上海 280至830元/人<br>乌镇 730至1200元/人</strong>
+              <em>预算随住宿和晚宴标准变化</em>
+            </div>
+            <h4 class="poll-section-title">主要体验</h4>
+            <p class="poll-summary">分组完成城市打卡与任务挑战，可加入NPC、随机惊喜卡片和“上海之最”等玩法，晚间统一聚餐、颁奖和抽奖。</p>
+            <h4 class="poll-section-title">参考流程</h4>
+            <div class="poll-schedule">
+              <div><time>12:00前</time><span>集合签到</span></div>
+              <div><time>12:00至13:00</time><span>午餐、分组和规则说明</span></div>
+              <div><time>13:30至17:30</time><span>完成5至8个城市任务点</span></div>
+              <div><time>18:30至21:00</time><span>晚宴、颁奖和抽奖</span></div>
+              <div><time>次日上午</time><span>自由活动、退房或返程</span></div>
+            </div>
+            <div class="poll-consider">
+              <p><strong>亮点：</strong>互动密度最高，体能要求可调整，照片和班级内容素材丰富。</p>
+              <p><strong>注意：</strong>受天气影响较大，需要提前踩点并安排现场执行人员。</p>
+            </div>
+            <div class="poll-result">
+              <div class="poll-result-row"><span>实时票数</span><b data-poll-count="city-orienteering">0票 · 0%</b></div>
+              <div class="poll-result-bar"><i data-poll-bar="city-orienteering"></i></div>
+            </div>
+            <label class="poll-choice"><input type="radio" name="optionId" value="city-orienteering" required><span>选择城市定向</span></label>
+          </article>
+
+          <article class="poll-option" data-option="country-leisure">
+            <span class="poll-option-no">方案二</span>
+            <h3>郊野休闲日</h3>
+            <p class="poll-option-sub">上海近郊 · 当天往返 · 轻松自由、可带宠物</p>
+            <div class="poll-budget">
+              <small>参考预算</small>
+              <strong>310至560元/人</strong>
+              <em>三套方案中预算相对较低</em>
+            </div>
+            <h4 class="poll-section-title">主要体验</h4>
+            <p class="poll-summary">钓鱼、划船、烧烤、厨神大赛、飞盘、桌游和自由休闲，可根据场地政策设置宠物友好区域。</p>
+            <h4 class="poll-section-title">参考流程</h4>
+            <div class="poll-schedule">
+              <div><time>10:00至10:30</time><span>集合出发</span></div>
+              <div><time>12:00至13:30</time><span>到达、烧烤和厨神大赛</span></div>
+              <div><time>13:30至16:30</time><span>钓鱼、划船、飞盘或桌游</span></div>
+              <div><time>16:30至17:00</time><span>颁奖和合影</span></div>
+              <div><time>17:00</time><span>集合返程</span></div>
+            </div>
+            <div class="poll-consider">
+              <p><strong>亮点：</strong>预算较低、节奏轻松、当天往返，也可考虑宠物友好安排。</p>
+              <p><strong>注意：</strong>11月底户外偏冷，下雨备选有限，自由活动可能让互动较分散。</p>
+            </div>
+            <div class="poll-result">
+              <div class="poll-result-row"><span>实时票数</span><b data-poll-count="country-leisure">0票 · 0%</b></div>
+              <div class="poll-result-bar"><i data-poll-bar="country-leisure"></i></div>
+            </div>
+            <label class="poll-choice"><input type="radio" name="optionId" value="country-leisure" required><span>选择郊野休闲</span></label>
+          </article>
+
+          <article class="poll-option" data-option="spa-retreat">
+            <span class="poll-option-no">方案三</span>
+            <h3>泡汤养生局</h3>
+            <p class="poll-option-sub">水裹或曲水兰亭 · 室内活动 · 约1至1.5天</p>
+            <div class="poll-budget">
+              <small>参考预算</small>
+              <strong>水裹 320至550元/人<br>曲水兰亭 700至1100元/人</strong>
+              <em>水裹价格不含住宿，曲水兰亭按住宿套餐参考</em>
+            </div>
+            <h4 class="poll-section-title">主要体验</h4>
+            <p class="poll-summary">泡汤、汗蒸、休息和聚餐，可搭配桌游、麻将、夜宵及自由交流，并根据方案选择是否留宿。</p>
+            <h4 class="poll-section-title">参考流程</h4>
+            <div class="poll-schedule">
+              <div><time>第一天14:00</time><span>入场或办理入住</span></div>
+              <div><time>14:00至18:00</time><span>泡汤、汗蒸和自由休息</span></div>
+              <div><time>18:00至20:00</time><span>统一晚餐</span></div>
+              <div><time>20:00至22:00</time><span>夜宵、桌游或自由交流</span></div>
+              <div><time>次日上午</time><span>早餐、退房或自由活动</span></div>
+            </div>
+            <div class="poll-consider">
+              <p><strong>亮点：</strong>全室内，不受天气影响，组织压力较小，整体舒适放松。</p>
+              <p><strong>注意：</strong>预算跨度较大，公共汤泉接受度不同，班级共同任务相对较少。</p>
+            </div>
+            <div class="poll-result">
+              <div class="poll-result-row"><span>实时票数</span><b data-poll-count="spa-retreat">0票 · 0%</b></div>
+              <div class="poll-result-bar"><i data-poll-bar="spa-retreat"></i></div>
+            </div>
+            <label class="poll-choice"><input type="radio" name="optionId" value="spa-retreat" required><span>选择泡汤养生</span></label>
+          </article>
+        </div>
+
+        <div class="poll-form">
+          <div class="poll-field"><label for="pollNickname">微信昵称 *</label><input id="pollNickname" name="nickname" maxlength="24" required placeholder="用于识别和核对投票"></div>
+          <div class="poll-field"><label for="pollBackupOption">备选方案（选填）</label><select id="pollBackupOption" name="backupOptionId"><option value="">不选备选</option><option value="city-orienteering">城市定向探索</option><option value="country-leisure">郊野休闲日</option><option value="spa-retreat">泡汤养生局</option></select></div>
+          <div class="poll-field"><label for="pollAttendance">参加意愿</label><select id="pollAttendance" name="attendanceIntent"><option value="">暂不填写</option><option>确定参加</option><option>大概率参加</option><option>暂不确定</option><option>无法参加</option></select></div>
+          <div class="poll-field"><label for="pollBudget">可接受人均预算</label><select id="pollBudget" name="budgetRange"><option value="">暂不填写</option><option>400元以内</option><option>401至700元</option><option>701至1100元</option><option>视体验而定</option></select></div>
+          <div class="poll-field comment"><label for="pollComment">补充意见（选填）</label><textarea id="pollComment" name="comment" maxlength="300" placeholder="可填写地点、交通、住宿、饮食或其他建议"></textarea></div>
+          <div class="poll-submit-bar">
+            <div class="poll-submit-copy"><strong id="pollSelectionText">请先选择一个主方案</strong><span class="poll-status" id="jujinPollStatus">正在连接共享投票数据</span></div>
+            <button class="btn primary" id="jujinPollSubmit" type="submit" disabled>提交投票</button>
+          </div>
+        </div>
+      </form>
     </section>
 
     <section class="metrics" aria-label="活动概览">
@@ -428,7 +621,7 @@
 
     <footer>
       <div><strong>数据边界：</strong>班级活动依据原始文档及后续补充录入；常用公历、农历和浮动节日根据日期规则自动提醒，生日活动仍未录入。</div>
-      <div>许愿、投票和周日晚认领为班级共享实时数据；个人新增排期与候选活动仍保存在本浏览器。可随时下载 JSON 备份或导出 .ics 日历。</div>
+      <div>聚劲周方案投票、许愿支持和周日晚认领为班级共享实时数据；个人新增排期与候选活动仍保存在本浏览器。可随时下载 JSON 备份或导出 .ics 日历。</div>
     </footer>
   </main>
 
@@ -479,6 +672,13 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script>
+      const SHARED_API_ORIGIN = "https://fdmba-2026-class-activity-hub.sure-hill-0440.chatgpt.site";
+    const JUJIN_OPTIONS = {
+      "city-orienteering": "城市定向探索",
+      "country-leisure": "郊野休闲日",
+      "spa-retreat": "泡汤养生局"
+    };
+
     const makeHoliday = (id, title, cadence, rule) => ({
       id, title, date: null, month: null, cadence, ...rule,
       category: "节日", stage: "reminder", status: "年度节日提醒",
@@ -745,18 +945,18 @@
       },
       {
         id: "fun-sports-day",
-        title: "聚劲周 · 趣味运动会",
+        title: "聚劲周 · 三方案待投票",
         date: "2026-11-21",
         endDate: "2026-11-22",
         month: "2026-11",
-        cadence: "11 月 21—22 日",
+        cadence: "11 月 21日至22日",
         category: "综合",
         stage: "dated",
-        status: "日期已标记 · 方案计划中",
+        status: "日期已标记 · 投票进行中",
         scale: "聚劲周班级活动",
         location: "待定",
-        description: "11 月 21—22 日为聚劲周，期间将组织班级活动，目前计划方案为趣味运动会。",
-        notes: ["落实趣味运动项目和活动流程", "确认场地、参与人数及协作分工", "如方案调整，保留聚劲周日期标记并更新活动形式"]
+        description: "聚劲周候选方案包括城市定向探索、郊野休闲日和泡汤养生局，最终方案由班级投票确定。",
+        notes: ["投票截止时间为10月25日24:00", "最高票方案优先进入执行确认", "后续仍需确认地点、住宿、交通、实际人数和最终预算"]
       },
       {
         id: "industry-forum",
@@ -808,7 +1008,6 @@
     const CLAIM_KEY = "fd-class-relaxation-claims-v1";
     const ACTOR_KEY = "fd-class-community-actor-v1";
     const NICKNAME_KEY = "fd-class-community-nickname-v1";
-    const SHARED_API_ORIGIN = "https://fdmba-2026-class-activity-hub.sure-hill-0440.chatgpt.site";
     const categories = ["全部", "运动", "社交", "分享", "综合", "节日"];
     const stageMeta = {
       dated: { title: "已定日程", note: "已有具体日期，可以进入发布与执行。" },
@@ -824,6 +1023,10 @@
     let relaxationClaims = loadClaims();
     let sharedDataOnline = false;
     let communityRefreshing = false;
+    let jujinPollOnline = false;
+    let jujinPollRefreshing = false;
+    let jujinFormHydrated = false;
+    let jujinPoll = { counts: {}, totalVotes: 0, currentVote: null, isOpen: true };
     let activeDetail = null;
     let selectedCategory = "全部";
     let cursor = new Date(2026, 10, 1);
@@ -941,6 +1144,127 @@
     function showToast(message) {
       const el = $("#toast"); el.textContent = message; el.classList.add("show");
       clearTimeout(showToast.timer); showToast.timer = setTimeout(() => el.classList.remove("show"), 2200);
+    }
+
+    function updatePollSelectionUI() {
+      const selected = $('input[name="optionId"]:checked', $("#jujinPollForm"))?.value || "";
+      $$(".poll-option").forEach(card => card.classList.toggle("selected", card.dataset.option === selected));
+      $("#pollSelectionText").textContent = selected ? `已选择：${JUJIN_OPTIONS[selected]}` : "请先选择一个主方案";
+      $("#jujinPollSubmit").disabled = !jujinPollOnline || !jujinPoll.isOpen || !selected || jujinPollRefreshing;
+    }
+
+    function setPollStatus(message, error = false) {
+      const status = $("#jujinPollStatus");
+      status.textContent = message;
+      status.classList.toggle("error", error);
+      $("#jujinPollState").textContent = error ? "连接失败" : (jujinPoll.isOpen ? "实时同步" : "已截止");
+    }
+
+    function renderJujinPoll({ hydrate = false } = {}) {
+      const total = Number(jujinPoll.totalVotes || 0);
+      $("#jujinTotalVotes").textContent = total;
+      Object.keys(JUJIN_OPTIONS).forEach(optionId => {
+        const count = Number(jujinPoll.counts?.[optionId] || 0);
+        const percent = total ? Math.round(count / total * 100) : 0;
+        const countLabel = $(`[data-poll-count="${optionId}"]`);
+        const bar = $(`[data-poll-bar="${optionId}"]`);
+        if (countLabel) countLabel.textContent = `${count}票 · ${percent}%`;
+        if (bar) bar.style.width = `${percent}%`;
+      });
+
+      if (hydrate && !jujinFormHydrated) {
+        const vote = jujinPoll.currentVote;
+        if (vote) {
+          const radio = $(`input[name="optionId"][value="${vote.optionId}"]`);
+          if (radio) radio.checked = true;
+          $("#pollNickname").value = vote.nickname || "";
+          $("#pollBackupOption").value = vote.backupOptionId || "";
+          $("#pollAttendance").value = vote.attendanceIntent || "";
+          $("#pollBudget").value = vote.budgetRange || "";
+          $("#pollComment").value = vote.comment || "";
+          if (vote.nickname) localStorage.setItem(NICKNAME_KEY, vote.nickname);
+        } else {
+          $("#pollNickname").value = localStorage.getItem(NICKNAME_KEY) || "";
+        }
+        jujinFormHydrated = true;
+      }
+
+      $("#jujinPollSubmit").textContent = jujinPoll.currentVote ? "更新投票" : "提交投票";
+      if (!jujinPoll.isOpen) setPollStatus("投票已截止，结果仍可查看");
+      else if (jujinPollOnline) setPollStatus(jujinPoll.currentVote ? "你的选择已保存，可在截止前修改" : "共享投票已连接，提交后全班实时可见");
+      updatePollSelectionUI();
+    }
+
+    async function refreshJujinPoll({ quiet = true } = {}) {
+      if (jujinPollRefreshing) return;
+      jujinPollRefreshing = true;
+      updatePollSelectionUI();
+      try {
+        const response = await fetch(`${SHARED_API_ORIGIN}/api/jujin-vote?voter=${encodeURIComponent(actorId())}`, { cache: "no-store" });
+        if (!response.ok) throw new Error("poll unavailable");
+        jujinPoll = await response.json();
+        jujinPollOnline = true;
+        renderJujinPoll({ hydrate: !jujinFormHydrated });
+      } catch (_) {
+        jujinPollOnline = false;
+        setPollStatus("共享投票暂时无法连接，请稍后重试", true);
+        if (!quiet) showToast("共享投票连接失败，没有记录本机假票");
+      } finally {
+        jujinPollRefreshing = false;
+        updatePollSelectionUI();
+      }
+    }
+
+    async function submitJujinPoll(event) {
+      event.preventDefault();
+      if (!jujinPollOnline) {
+        showToast("共享投票尚未连接，请稍后重试");
+        return;
+      }
+      const form = new FormData(event.currentTarget);
+      const optionId = String(form.get("optionId") || "");
+      const backupOptionId = String(form.get("backupOptionId") || "");
+      const nickname = String(form.get("nickname") || "").trim();
+      if (!optionId || !nickname) {
+        showToast("请选择主方案并填写微信昵称");
+        return;
+      }
+      if (backupOptionId && backupOptionId === optionId) {
+        showToast("备选方案不能与主方案相同");
+        return;
+      }
+
+      const submit = $("#jujinPollSubmit");
+      submit.disabled = true;
+      submit.textContent = "提交中…";
+      try {
+        const response = await fetch(`${SHARED_API_ORIGIN}/api/jujin-vote`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            voterId: actorId(),
+            nickname,
+            optionId,
+            backupOptionId,
+            attendanceIntent: String(form.get("attendanceIntent") || ""),
+            budgetRange: String(form.get("budgetRange") || ""),
+            comment: String(form.get("comment") || "").trim()
+          })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "投票提交失败");
+        jujinPoll = result;
+        jujinPollOnline = true;
+        localStorage.setItem(NICKNAME_KEY, nickname);
+        renderJujinPoll();
+        showToast(result.message || "投票已保存");
+      } catch (error) {
+        setPollStatus(error instanceof Error ? error.message : "投票提交失败，请重试", true);
+        showToast(error instanceof Error ? error.message : "投票提交失败，请重试");
+      } finally {
+        submit.textContent = jujinPoll.currentVote ? "更新投票" : "提交投票";
+        updatePollSelectionUI();
+      }
     }
 
     function openEventEditor(id = null, defaults = {}) {
@@ -1443,6 +1767,8 @@
       showToast("活动、许愿池和候选数据已备份");
     });
     $("#downloadIcs").addEventListener("click", exportICS);
+    $$('input[name="optionId"]').forEach(input => input.addEventListener("change", updatePollSelectionUI));
+    $("#jujinPollForm").addEventListener("submit", submitJujinPoll);
     $("#eventForm").addEventListener("submit", event => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
@@ -1533,8 +1859,10 @@
     });
     importCandidateFromQuery();
     renderAll();
+    renderJujinPoll();
     refreshCommunityData();
-    setInterval(() => refreshCommunityData(), 8000);
+    refreshJujinPoll();
+    setInterval(() => { refreshCommunityData(); refreshJujinPoll(); }, 8000);
   </script>
 </body>
 </html>
